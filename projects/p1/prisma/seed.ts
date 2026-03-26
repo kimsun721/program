@@ -182,9 +182,9 @@ async function main() {
         ...courseInfo,
         instructorId: instructorProfile.id,
         status: "PUBLISHED",
-        avgRating: Math.round((3.5 + Math.random() * 1.5) * 10) / 10,
-        reviewCount: Math.floor(Math.random() * 100) + 10,
-        enrollmentCount: Math.floor(Math.random() * 500) + 50,
+        avgRating: 0,
+        reviewCount: 0,
+        enrollmentCount: 0,
       },
     });
 
@@ -259,6 +259,25 @@ async function main() {
         rating: Math.floor(Math.random() * 2) + 4,
         content:
           "정말 좋은 강의입니다! 강사님의 설명이 명확하고 이해하기 쉬워서 학습하기 편했습니다. 적극 추천드립니다.",
+      },
+    });
+
+    // Update course stats from actual data
+    const [reviewStats, enrollmentCount] = await Promise.all([
+      prisma.review.aggregate({
+        where: { courseId: course.id },
+        _avg: { rating: true },
+        _count: { id: true },
+      }),
+      prisma.enrollment.count({ where: { courseId: course.id } }),
+    ]);
+
+    await prisma.course.update({
+      where: { id: course.id },
+      data: {
+        avgRating: reviewStats._avg.rating ?? 0,
+        reviewCount: reviewStats._count.id,
+        enrollmentCount,
       },
     });
 
