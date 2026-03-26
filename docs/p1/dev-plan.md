@@ -14,12 +14,16 @@
 
 | 기술 | 버전 | 선택 이유 |
 |------|------|-----------|
-| Next.js (App Router) | 15.x | 풀스택 단일 프레임워크, SSR/SSG로 SEO 최적화, Server Actions으로 API 대체 |
-| TypeScript | 5.x | 정적 타입으로 런타임 오류 방지 |
-| Prisma ORM | 5.x | 타입 안전 쿼리, 마이그레이션 관리 |
-| TailwindCSS | 4.x | 유틸리티 클래스 기반 빠른 UI 구성 |
+| Next.js (App Router) | 16.x | 풀스택 단일 프레임워크, SSR/SSG로 SEO 최적화, Server Actions으로 API 대체 |
+| TypeScript | 5.9.x | 정적 타입으로 런타임 오류 방지 |
+| Prisma ORM | 7.x | 타입 안전 쿼리, 마이그레이션 관리 (pg adapter 기반) |
+| TailwindCSS | 4.2.x | 유틸리티 클래스 기반 빠른 UI 구성 |
 | shadcn/ui | latest | 접근성 준수, Radix UI 기반 컴포넌트 |
-| NextAuth.js | 5.x | JWT 기반 세션·인증 관리 |
+| NextAuth.js (Auth.js) | 5.0.0-beta | JWT 기반 세션·인증 관리 |
+| zod | 4.x | 스키마 유효성 검사 |
+| hls.js | 1.6.x | HLS 스트리밍 플레이어 |
+| nodemailer | 8.x | 이메일 발송 |
+| bcryptjs | 3.x | 비밀번호 해싱 |
 
 ### 데이터베이스 / 인프라
 
