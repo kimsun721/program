@@ -1,0 +1,202 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  password     String?
+  nickname     String
+  profileImage String?
+  role         String[]  @default(["STUDENT"])
+  status       String    @default("ACTIVE")
+  emailVerified DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
+
+  emailVerifications EmailVerification[]
+  instructorProfile  InstructorProfile?
+  enrollments        Enrollment[]
+  reviews            Review[]
+  wishlists          Wishlist[]
+
+  @@map("users")
+}
+
+model EmailVerification {
+  id        String    @id @default(cuid())
+  userId    String
+  token     String    @unique
+  type      String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("email_verifications")
+}
+
+model Language {
+  id        String  @id @default(cuid())
+  code      String  @unique
+  nameKo    String
+  nameEn    String
+  isActive  Boolean @default(true)
+  sortOrder Int     @default(0)
+
+  courses Course[]
+
+  @@map("languages")
+}
+
+model Category {
+  id        String  @id @default(cuid())
+  name      String
+  slug      String  @unique
+  isActive  Boolean @default(true)
+  sortOrder Int     @default(0)
+
+  courses Course[]
+
+  @@map("categories")
+}
+
+model InstructorProfile {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  realName    String
+  headline    String
+  description String
+  career      String
+  status      String   @default("ACTIVE")
+  createdAt   DateTime @default(now())
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  courses Course[]
+
+  @@map("instructor_profiles")
+}
+
+model Course {
+  id              String   @id @default(cuid())
+  instructorId    String
+  languageId      String
+  categoryId      String
+  title           String
+  slug            String   @unique
+  description     String
+  thumbnail       String?
+  level           String   @default("BEGINNER")
+  price           Int      @default(0)
+  status          String   @default("DRAFT")
+  avgRating       Float    @default(0)
+  reviewCount     Int      @default(0)
+  enrollmentCount Int      @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  instructor  InstructorProfile @relation(fields: [instructorId], references: [id])
+  language    Language          @relation(fields: [languageId], references: [id])
+  category    Category          @relation(fields: [categoryId], references: [id])
+  sections    Section[]
+  enrollments Enrollment[]
+  reviews     Review[]
+  wishlists   Wishlist[]
+
+  @@map("courses")
+}
+
+model Section {
+  id        String   @id @default(cuid())
+  courseId  String
+  title     String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  course   Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lectures Lecture[]
+
+  @@map("sections")
+}
+
+model Lecture {
+  id            String   @id @default(cuid())
+  sectionId     String
+  title         String
+  hlsUrl        String?
+  duration      Int      @default(0)
+  isFreePreview Boolean  @default(false)
+  sortOrder     Int      @default(0)
+  createdAt     DateTime @default(now())
+
+  section          Section          @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  lectureProgresses LectureProgress[]
+
+  @@map("lectures")
+}
+
+model Enrollment {
+  id          String   @id @default(cuid())
+  userId      String
+  courseId    String
+  status      String   @default("ACTIVE")
+  progressPct Float    @default(0)
+  createdAt   DateTime @default(now())
+
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course            Course            @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lectureProgresses LectureProgress[]
+
+  @@unique([userId, courseId])
+  @@map("enrollments")
+}
+
+model LectureProgress {
+  id             String   @id @default(cuid())
+  enrollmentId   String
+  lectureId      String
+  watchedSeconds Int      @default(0)
+  isCompleted    Boolean  @default(false)
+  updatedAt      DateTime @updatedAt
+
+  enrollment Enrollment @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  lecture    Lecture    @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+
+  @@unique([enrollmentId, lectureId])
+  @@map("lecture_progresses")
+}
+
+model Review {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  rating    Int
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@map("reviews")
+}
+
+model Wishlist {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  createdAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@map("wishlists")
+}
