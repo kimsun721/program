@@ -7,24 +7,30 @@ datasource db {
 }
 
 model User {
-  id           String    @id @default(cuid())
-  email        String    @unique
-  password     String?
-  nickname     String
-  profileImage String?
-  role         String[]  @default(["STUDENT"])
-  status       String    @default("ACTIVE")
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String?
+  nickname      String
+  profileImage  String?
+  role          String[]  @default(["STUDENT"])
+  status        String    @default("ACTIVE")
   emailVerified DateTime?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
-  deletedAt    DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
 
   emailVerifications EmailVerification[]
   instructorProfile  InstructorProfile?
   enrollments        Enrollment[]
   reviews            Review[]
   wishlists          Wishlist[]
+  qnaQuestions       QnaQuestion[]
+  qnaAnswers         QnaAnswer[]
+  vocabularyBooks    VocabularyBook[]
+  studyNotes         StudyNote[]
+  certificates       Certificate[]
 
+  @@index([status])
   @@map("users")
 }
 
@@ -68,47 +74,59 @@ model Category {
 }
 
 model InstructorProfile {
-  id          String   @id @default(cuid())
-  userId      String   @unique
-  realName    String
-  headline    String
-  description String
-  career      String
-  status      String   @default("ACTIVE")
-  createdAt   DateTime @default(now())
+  id              String    @id @default(cuid())
+  userId          String    @unique
+  realName        String
+  headline        String
+  description     String
+  career          String
+  status          String    @default("PENDING")
+  rejectionReason String?
+  reviewedAt      DateTime?
+  createdAt       DateTime  @default(now())
 
   user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   courses Course[]
 
+  @@index([status])
   @@map("instructor_profiles")
 }
 
 model Course {
-  id              String   @id @default(cuid())
+  id              String    @id @default(cuid())
   instructorId    String
   languageId      String
   categoryId      String
   title           String
-  slug            String   @unique
+  slug            String    @unique
   description     String
   thumbnail       String?
-  level           String   @default("BEGINNER")
-  price           Int      @default(0)
-  status          String   @default("DRAFT")
-  avgRating       Float    @default(0)
-  reviewCount     Int      @default(0)
-  enrollmentCount Int      @default(0)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  level           String    @default("BEGINNER")
+  price           Int       @default(0)
+  status          String    @default("DRAFT")
+  rejectionReason String?
+  reviewedAt      DateTime?
+  avgRating       Float     @default(0)
+  reviewCount     Int       @default(0)
+  enrollmentCount Int       @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
-  instructor  InstructorProfile @relation(fields: [instructorId], references: [id])
-  language    Language          @relation(fields: [languageId], references: [id])
-  category    Category          @relation(fields: [categoryId], references: [id])
-  sections    Section[]
-  enrollments Enrollment[]
-  reviews     Review[]
-  wishlists   Wishlist[]
+  instructor      InstructorProfile @relation(fields: [instructorId], references: [id])
+  language        Language          @relation(fields: [languageId], references: [id])
+  category        Category          @relation(fields: [categoryId], references: [id])
+  sections        Section[]
+  enrollments     Enrollment[]
+  reviews         Review[]
+  wishlists       Wishlist[]
+  qnaQuestions    QnaQuestion[]
+  vocabularyBooks VocabularyBook[]
+  certificates    Certificate[]
 
+  @@index([status])
+  @@index([instructorId, status])
+  @@index([languageId])
+  @@index([categoryId])
   @@map("courses")
 }
 
@@ -135,8 +153,10 @@ model Lecture {
   sortOrder     Int      @default(0)
   createdAt     DateTime @default(now())
 
-  section          Section          @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  section           Section           @relation(fields: [sectionId], references: [id], onDelete: Cascade)
   lectureProgresses LectureProgress[]
+  qnaQuestions      QnaQuestion[]
+  studyNotes        StudyNote[]
 
   @@map("lectures")
 }
@@ -199,4 +219,100 @@ model Wishlist {
 
   @@unique([userId, courseId])
   @@map("wishlists")
+}
+
+model QnaQuestion {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String
+  lectureId String?
+  title     String
+  content   String
+  status    String   @default("OPEN")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course  Course      @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lecture Lecture?    @relation(fields: [lectureId], references: [id], onDelete: SetNull)
+  answers QnaAnswer[]
+
+  @@index([courseId, status])
+  @@index([userId])
+  @@map("qna_questions")
+}
+
+model QnaAnswer {
+  id         String   @id @default(cuid())
+  questionId String
+  userId     String
+  content    String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  question QnaQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  user     User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+  @@map("qna_answers")
+}
+
+model VocabularyBook {
+  id        String   @id @default(cuid())
+  userId    String
+  courseId  String?
+  title     String
+  createdAt DateTime @default(now())
+
+  user   User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course?          @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  items  VocabularyItem[]
+
+  @@index([userId])
+  @@map("vocabulary_books")
+}
+
+model VocabularyItem {
+  id        String   @id @default(cuid())
+  bookId    String
+  term      String
+  meaning   String
+  example   String?
+  learned   Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  book VocabularyBook @relation(fields: [bookId], references: [id], onDelete: Cascade)
+
+  @@index([bookId])
+  @@map("vocabulary_items")
+}
+
+model StudyNote {
+  id           String   @id @default(cuid())
+  userId       String
+  lectureId    String
+  content      String
+  timestampSec Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lecture Lecture @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+
+  @@index([userId, lectureId])
+  @@map("study_notes")
+}
+
+model Certificate {
+  id       String   @id @default(cuid())
+  userId   String
+  courseId String
+  serialNo String   @unique
+  issuedAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@map("certificates")
 }

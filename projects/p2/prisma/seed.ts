@@ -79,7 +79,7 @@ async function main() {
       email: "instructor@test.com",
       password: hashedPassword,
       nickname: "김강사",
-      role: ["INSTRUCTOR"],
+      role: ["STUDENT", "INSTRUCTOR"],
       status: "ACTIVE",
       emailVerified: new Date(),
     },
@@ -94,8 +94,52 @@ async function main() {
       headline: "10년 경력의 언어 교육 전문가",
       description:
         "안녕하세요! 저는 10년간 언어 교육 분야에서 활동해온 김민준입니다. 영어, 일본어 전문 강사로 다양한 수강생들의 언어 실력 향상을 도왔습니다. 실용적이고 재미있는 강의로 여러분의 언어 학습을 도와드리겠습니다.",
-      career: "現 LinguaClass 전임 강사\n前 YBM 영어 강사 (5년)\n前 일본어 학원 운영 (3년)\n한국외국어대학교 영어학과 졸업",
+      career:
+        "現 LinguaClass 전임 강사\n前 YBM 영어 강사 (5년)\n前 일본어 학원 운영 (3년)\n한국외국어대학교 영어학과 졸업",
+      status: "APPROVED",
+      reviewedAt: new Date(),
+    },
+  });
+
+  // Admin account
+  const adminUser = await prisma.user.upsert({
+    where: { email: "admin@test.com" },
+    update: {},
+    create: {
+      email: "admin@test.com",
+      password: hashedPassword,
+      nickname: "관리자",
+      role: ["ADMIN"],
       status: "ACTIVE",
+      emailVerified: new Date(),
+    },
+  });
+
+  // Pending instructor (for admin approval demo)
+  const pendingInstructorUser = await prisma.user.upsert({
+    where: { email: "pending-instructor@test.com" },
+    update: {},
+    create: {
+      email: "pending-instructor@test.com",
+      password: hashedPassword,
+      nickname: "박지원",
+      role: ["STUDENT"],
+      status: "ACTIVE",
+      emailVerified: new Date(),
+    },
+  });
+
+  await prisma.instructorProfile.upsert({
+    where: { userId: pendingInstructorUser.id },
+    update: {},
+    create: {
+      userId: pendingInstructorUser.id,
+      realName: "박지원",
+      headline: "프랑스에서 7년 거주, 프랑스어 회화 전문",
+      description:
+        "안녕하세요. 파리 소르본 대학에서 7년간 유학 후 한국에서 프랑스어를 가르치고 있는 박지원입니다. 일상에서 바로 쓸 수 있는 자연스러운 프랑스어를 알려드리고 싶습니다.",
+      career: "現 프랑스어 프리랜서 강사\n파리 소르본 대학 졸업\nDALF C1 보유",
+      status: "PENDING",
     },
   });
 
@@ -113,7 +157,13 @@ async function main() {
     },
   });
 
-  console.log("Users seeded:", instructorUser.email, studentUser.email);
+  console.log(
+    "Users seeded:",
+    adminUser.email,
+    instructorUser.email,
+    studentUser.email,
+    pendingInstructorUser.email
+  );
 
   // Courses
   const courseData = [
