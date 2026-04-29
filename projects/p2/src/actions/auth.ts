@@ -312,6 +312,107 @@ export async function updateProfile(formData: FormData) {
   return { success: "프로필이 업데이트되었습니다" };
 }
 
+export async function changePassword(formData: FormData) {
+  const session = await auth();
+  if (!session?.user) {
+    return { error: "로그인이 필요합니다" };
+  }
+
+  const currentPassword = formData.get("currentPassword") as string;
+  const newPassword = formData.get("newPassword") as string;
+  const confirmPassword = formData.get("confirmPassword") as string;
+
+  if (!newPassword || newPassword.length < 8) {
+    return { error: "새 비밀번호는 8자 이상이어야 합니다" };
+  }
+  if (!/^(?=.*[A-Za-z])(?=.*\d)/.test(newPassword)) {
+    return { error: "새 비밀번호는 영문자와 숫자를 포함해야 합니다" };
+  }
+  if (newPassword !== confirmPassword) {
+    return { error: "비밀번호 확인이 일치하지 않습니다" };
+  }
+
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+  });
+  if (!user || !user.password) {
+    return { error: "사용자를 찾을 수 없습니다" };
+  }
+
+  const isValid = await bcrypt.compare(currentPassword, user.password);
+  if (!isValid) {
+    return { error: "현재 비밀번호가 올바르지 않습니다" };
+  }
+
+  const hashed = await bcrypt.hash(newPassword, 10);
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { password: hashed },
+  });
+
+  return { success: "비밀번호가 변경되었습니다" };
+}
+
+export async function applyInstructor(formData: FormData) {
+  const session = await auth();
+  if (!session?.user) {
+    return { error: "로그인이 필요합니다" };
+  }
+
+  const realName = (formData.get("realName") as string | null)?.trim() ?? "";
+  const headline = (formData.get("headline") as string | null)?.trim() ?? "";
+  const description =
+    (formData.get("description") as string | null)?.trim() ?? "";
+  const career = (formData.get("career") as string | null)?.trim() ?? "";
+
+  if (realName.length < 2) return { error: "실명을 입력해주세요" };
+  if (headline.length < 5) return { error: "한 줄 소개를 입력해주세요" };
+  if (description.length < 30)
+    return { error: "자기소개는 30자 이상 작성해주세요" };
+  if (career.length < 10)
+    return { error: "경력은 10자 이상 작성해주세요" };
+
+  const existing = await prisma.instructorProfile.findUnique({
+    where: { userId: session.user.id },
+  });
+
+  if (existing) {
+    if (existing.status === "PENDING") {
+      return { error: "이미 신청한 내역이 검토 중입니다" };
+    }
+    if (existing.status === "APPROVED") {
+      return { error: "이미 강사로 승인된 사용자입니다" };
+    }
+    // REJECTED → 재신청 허용 (PENDING으로 갱신)
+    await prisma.instructorProfile.update({
+      where: { id: existing.id },
+      data: {
+        realName,
+        headline,
+        description,
+        career,
+        status: "PENDING",
+        rejectionReason: null,
+        reviewedAt: null,
+      },
+    });
+  } else {
+    await prisma.instructorProfile.create({
+      data: {
+        userId: session.user.id,
+        realName,
+        headline,
+        description,
+        career,
+        status: "PENDING",
+      },
+    });
+  }
+
+  revalidatePath("/become-instructor");
+  return { success: "강사 신청이 접수되었습니다. 검토 후 알려드릴게요." };
+}
+
 export async function deleteAccount(formData: FormData) {
   const session = await auth();
   if (!session?.user) {

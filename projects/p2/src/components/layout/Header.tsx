@@ -47,6 +47,22 @@ export default function Header() {
                 <Heart className="h-4 w-4" />
                 찜 목록
               </Link>
+              {session.user.role?.includes("INSTRUCTOR") && (
+                <Link
+                  href="/instructor/dashboard"
+                  className="text-sm font-medium text-blue-700 hover:text-blue-900 transition-colors"
+                >
+                  강사
+                </Link>
+              )}
+              {session.user.role?.includes("ADMIN") && (
+                <Link
+                  href="/admin/dashboard"
+                  className="text-sm font-medium text-red-700 hover:text-red-900 transition-colors"
+                >
+                  관리자
+                </Link>
+              )}
             </>
           )}
         </nav>
