@@ -4,6 +4,7 @@ import { getEnrollment } from "@/actions/enrollments";
 import { getCourse } from "@/actions/courses";
 import VideoPlayer from "@/components/player/VideoPlayer";
 import LectureNavigation from "./LectureNavigation";
+import { LectureNoteWidget } from "./LectureNoteWidget";
 import { formatDuration } from "@/lib/utils";
 import { Lock, CheckCircle, PlayCircle } from "lucide-react";
 import type { Metadata } from "next";
@@ -110,6 +111,10 @@ export default async function LearnPage({ params, searchParams }: LearnPageProps
                   </span>
                 )}
               </div>
+            </div>
+
+            <div className="mt-6">
+              <LectureNoteWidget lectureId={currentLecture.id} />
             </div>
           </div>
         </div>

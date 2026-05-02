@@ -26,6 +26,17 @@ export default async function MyCoursesPage() {
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-2">내 강의</h1>
         <p className="text-gray-500">수강 중인 강의를 확인하세요.</p>
+        <div className="mt-4 flex flex-wrap gap-2 text-sm">
+          <Link href="/my" className="rounded-md bg-slate-900 px-3 py-1.5 text-white">내 강의</Link>
+          <Link href="/my/qna" className="rounded-md border px-3 py-1.5 hover:bg-slate-50">Q&amp;A</Link>
+          <Link href="/my/vocab" className="rounded-md border px-3 py-1.5 hover:bg-slate-50">단어장</Link>
+          <Link href="/my/notes" className="rounded-md border px-3 py-1.5 hover:bg-slate-50">학습 노트</Link>
+          <Link href="/my/certificates" className="rounded-md border px-3 py-1.5 hover:bg-slate-50">수료증</Link>
+          <Link href="/my/account" className="rounded-md border px-3 py-1.5 hover:bg-slate-50">계정</Link>
+          {!session.user.role?.includes("INSTRUCTOR") && (
+            <Link href="/become-instructor" className="rounded-md border px-3 py-1.5 hover:bg-slate-50">강사 신청</Link>
+          )}
+        </div>
       </div>
 
       {enrollments.length === 0 ? (
