@@ -2,10 +2,12 @@ import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 import { getCourse } from "@/actions/courses";
 import { getReviews } from "@/actions/reviews";
 import { getEnrollment } from "@/actions/enrollments";
 import { isWishlisted } from "@/actions/wishlist";
+import { CourseQnaSection } from "./CourseQnaSection";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -50,10 +52,23 @@ export default async function CourseDetailPage({
 
   if (!course) notFound();
 
-  const [reviews, enrollment, wishlisted] = await Promise.all([
+  const [reviews, enrollment, wishlisted, qnaQuestions] = await Promise.all([
     getReviews(id),
     session?.user ? getEnrollment(id) : null,
     session?.user ? isWishlisted(id) : false,
+    prisma.qnaQuestion.findMany({
+      where: { courseId: course.id },
+      orderBy: { createdAt: "desc" },
+      take: 30,
+      include: {
+        user: { select: { id: true, nickname: true } },
+        lecture: { select: { id: true, title: true } },
+        answers: {
+          orderBy: { createdAt: "asc" },
+          include: { user: { select: { nickname: true } } },
+        },
+      },
+    }),
   ]);
 
   const totalLectures = course.sections.reduce(
@@ -189,6 +204,9 @@ export default async function CourseDetailPage({
                 <TabsTrigger value="reviews">
                   리뷰 ({course.reviewCount})
                 </TabsTrigger>
+                <TabsTrigger value="qna">
+                  Q&amp;A ({qnaQuestions.length})
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="curriculum">
@@ -287,6 +305,33 @@ export default async function CourseDetailPage({
                   isEnrolled={!!enrollment}
                   isLoggedIn={!!session?.user}
                   currentUserId={session?.user?.id}
+                />
+              </TabsContent>
+
+              <TabsContent value="qna">
+                <CourseQnaSection
+                  courseId={course.id}
+                  isEnrolled={!!enrollment}
+                  lectures={course.sections.flatMap((s) =>
+                    s.lectures.map((l) => ({ id: l.id, title: l.title }))
+                  )}
+                  questions={qnaQuestions.map((q) => ({
+                    id: q.id,
+                    title: q.title,
+                    content: q.content,
+                    status: q.status,
+                    createdAt: q.createdAt,
+                    user: { id: q.user.id, nickname: q.user.nickname },
+                    lecture: q.lecture
+                      ? { id: q.lecture.id, title: q.lecture.title }
+                      : null,
+                    answers: q.answers.map((a) => ({
+                      id: a.id,
+                      content: a.content,
+                      createdAt: a.createdAt,
+                      user: { nickname: a.user.nickname },
+                    })),
+                  }))}
                 />
               </TabsContent>
             </Tabs>
