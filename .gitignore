@@ -1,1 +1,6 @@
 .obsidian/
+
+# 발표 자료 PDF는 빌드 산출물이므로 추적하지 않는다
+/p1.pdf
+/p2.pdf
+/p3.pdf

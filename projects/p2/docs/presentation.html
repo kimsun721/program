@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LinguaClass P2 - 발표 자료</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    font-family: 'Noto Sans KR', -apple-system, sans-serif;
+    background: #f0f4f8;
+    color: #1a202c;
+    margin: 0;
+    padding: 0;
+  }
+
+  .slide {
+    width: 1280px;
+    height: 720px;
+    margin: 20px auto;
+    background: white;
+    overflow: hidden;
+    position: relative;
+    page-break-after: always;
+    break-after: page;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  }
+  .slide:last-child { page-break-after: auto; break-after: auto; }
+
+  /* ===== 타이틀 ===== */
+  .slide-title {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 45%, #2563eb 100%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+  }
+  .slide-title .step {
+    background: rgba(125, 211, 252, 0.18);
+    border: 1px solid rgba(125, 211, 252, 0.4);
+    color: #7dd3fc;
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+  }
+  .slide-title .logo {
+    font-size: 60px;
+    font-weight: 900;
+    letter-spacing: -2px;
+    margin-bottom: 14px;
+  }
+  .slide-title .logo span { color: #7dd3fc; }
+  .slide-title .tagline {
+    font-size: 22px;
+    font-weight: 300;
+    opacity: 0.9;
+    margin-bottom: 40px;
+  }
+  .slide-title .badge-row {
+    display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+    max-width: 800px;
+  }
+  .slide-title .badge {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.28);
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .slide-title .deco {
+    position: absolute; width: 320px; height: 320px;
+    border-radius: 50%; background: rgba(255,255,255,0.05);
+  }
+  .slide-title .deco-1 { top: -90px; right: -70px; }
+  .slide-title .deco-2 { bottom: -110px; left: -70px; width: 260px; height: 260px; }
+
+  /* ===== 공통 헤더 ===== */
+  .slide-header {
+    background: linear-gradient(90deg, #1e3a5f, #2563eb);
+    color: white;
+    padding: 22px 56px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .slide-header .num {
+    background: rgba(255,255,255,0.22);
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px;
+    flex-shrink: 0;
+  }
+  .slide-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .slide-header .right {
+    margin-left: auto;
+    font-size: 12px; opacity: 0.85; letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .slide-body { padding: 32px 56px; height: calc(100% - 82px); overflow: hidden; }
+
+  /* ===== 카드 그리드 ===== */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+
+  .card {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 18px;
+    background: #f8fafc;
+  }
+  .card h3 {
+    font-size: 14px;
+    color: #1e3a5f;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  .card p {
+    font-size: 13px;
+    color: #334155;
+    line-height: 1.55;
+  }
+  .card.accent { border-color: #93c5fd; background: #eff6ff; }
+  .card.amber  { border-color: #fcd34d; background: #fffbeb; }
+  .card.red    { border-color: #fca5a5; background: #fef2f2; }
+  .card.emerald{ border-color: #6ee7b7; background: #ecfdf5; }
+
+  .pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    background: #e2e8f0;
+    color: #1e293b;
+    margin: 2px 4px 2px 0;
+  }
+  .pill.blue   { background: #dbeafe; color: #1d4ed8; }
+  .pill.emerald{ background: #d1fae5; color: #047857; }
+  .pill.amber  { background: #fef3c7; color: #b45309; }
+  .pill.red    { background: #fee2e2; color: #b91c1c; }
+  .pill.purple { background: #ede9fe; color: #6d28d9; }
+
+  /* ===== 표 ===== */
+  table.role-matrix {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  table.role-matrix th, table.role-matrix td {
+    border: 1px solid #e2e8f0;
+    padding: 8px 10px;
+    text-align: left;
+  }
+  table.role-matrix thead th {
+    background: #1e3a5f;
+    color: white;
+    font-weight: 600;
+  }
+  table.role-matrix td.c { text-align: center; }
+  table.role-matrix tr:nth-child(even) td { background: #f8fafc; }
+
+  /* ===== 워크플로 다이어그램 ===== */
+  .flow {
+    display: flex; align-items: center; gap: 12px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .flow-node {
+    border: 2px solid #1e3a5f;
+    padding: 10px 16px;
+    border-radius: 10px;
+    background: white;
+    font-weight: 600;
+    color: #1e3a5f;
+    font-size: 13px;
+    min-width: 120px;
+    text-align: center;
+  }
+  .flow-node.start { background: #dbeafe; }
+  .flow-node.review { background: #fef3c7; border-color: #d97706; color: #92400e; }
+  .flow-node.ok { background: #d1fae5; border-color: #059669; color: #065f46; }
+  .flow-node.no { background: #fee2e2; border-color: #dc2626; color: #991b1b; }
+  .flow-arrow {
+    color: #475569;
+    font-size: 18px;
+    font-weight: 800;
+  }
+
+  /* ===== ERD ===== */
+  .erd-table {
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    overflow: hidden;
+    background: white;
+    font-size: 11.5px;
+  }
+  .erd-table .name {
+    background: #1e3a5f; color: white;
+    padding: 6px 10px; font-weight: 700;
+    text-align: center;
+  }
+  .erd-table .col {
+    padding: 4px 10px;
+    border-top: 1px solid #e2e8f0;
+    display: flex; justify-content: space-between;
+    color: #334155;
+  }
+  .erd-table .col strong { color: #1e3a5f; }
+  .erd-table .col.pk strong { color: #b91c1c; }
+  .erd-table .col.fk strong { color: #1d4ed8; }
+
+  /* ===== KPI ===== */
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .kpi {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    background: #f8fafc;
+  }
+  .kpi .label { font-size: 11px; color: #64748b; }
+  .kpi .num { font-size: 28px; font-weight: 800; color: #0f172a; margin-top: 4px; }
+
+  /* ===== 일정표 ===== */
+  .schedule {
+    display: grid; grid-template-columns: 90px 1fr; row-gap: 6px;
+    column-gap: 14px;
+    font-size: 13px;
+  }
+  .schedule .day {
+    color: #1e3a5f; font-weight: 700;
+  }
+  .schedule .task { color: #334155; }
+
+  /* ===== 종료 ===== */
+  .slide-end {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 60%, #06b6d4 100%);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .slide-end .main {
+    font-size: 48px; font-weight: 900; letter-spacing: -2px;
+    margin-bottom: 14px;
+  }
+  .slide-end .sub { font-size: 18px; opacity: 0.85; margin-bottom: 36px; }
+  .slide-end .stats { display: flex; gap: 22px; }
+  .slide-end .stat {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 14px 22px; border-radius: 14px;
+  }
+  .slide-end .stat .num { font-size: 32px; font-weight: 800; color: #7dd3fc; }
+  .slide-end .stat .label { font-size: 12px; opacity: 0.85; }
+
+  @page {
+    size: 1280px 720px;
+    margin: 0;
+  }
+  @media print {
+    html, body { background: white; margin: 0; padding: 0; }
+    .slide {
+      margin: 0 !important;
+      box-shadow: none;
+      page-break-after: always;
+      break-after: page;
+      width: 1280px;
+      height: 720px;
+      display: block;
+    }
+    .slide:last-child {
+      page-break-after: auto;
+      break-after: auto;
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- 1. 타이틀 -->
+<div class="slide slide-title">
+  <div class="deco deco-1"></div>
+  <div class="deco deco-2"></div>
+  <div class="step">PROJECT 2 · 역할 분리 및 인증, 전체 기능 구현</div>
+  <div class="logo">Lingua<span>Class</span></div>
+  <div class="tagline">학생 · 강사 · 관리자 — 다중 역할 SaaS로 확장</div>
+  <div class="badge-row">
+    <div class="badge">Next.js 16 App Router</div>
+    <div class="badge">Auth.js v5 + RBAC</div>
+    <div class="badge">Prisma 7 + PostgreSQL 17</div>
+    <div class="badge">@react-pdf/renderer</div>
+  </div>
+</div>
+
+<!-- 2. P1 → P2 변화 -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="num">01</div>
+    <h2>P1 → P2 무엇이 달라지는가</h2>
+    <div class="right">2026-04-26 ~ 05-04</div>
+  </div>
+  <div class="slide-body">
+    <div class="grid-2">
+      <div class="card">
+        <h3>P1 — 학생(수강생) 중심</h3>
+        <p>
+          비회원·학생 경험을 끝까지 검증하는 단계.<br>
+          탐색, 위시리스트, 수강신청, HLS 영상 시청, 진도 자동 저장, 리뷰.
+        </p>
+        <p style="margin-top:10px"><span class="pill blue">단일 역할</span><span class="pill">단일 UX</span></p>
+      </div>
+      <div class="card accent">
+        <h3>P2 — 다중 역할 플랫폼</h3>
+        <p>
+          단일 역할을 <strong>STUDENT / INSTRUCTOR / ADMIN</strong> 3개로 분리.<br>
+          역할별 라우트·권한·UI를 분리하고 강사 승인·강의 게시 승인 워크플로우를 추가.
+        </p>
+        <p style="margin-top:10px">
+          <span class="pill blue">STUDENT</span>
+          <span class="pill emerald">INSTRUCTOR</span>
+          <span class="pill red">ADMIN</span>
+        </p>
+      </div>
+      <div class="card amber" style="grid-column: span 2;">
+        <h3>P2가 추가로 책임지는 영역</h3>
+        <p>
+          ① 인증/세션에 role 배열 반영 ② 미들웨어 기반 경로 가드(RBAC) ③ 강사 강의 CRUD + 커리큘럼 에디터
+          ④ 관리자 운영 대시보드/회원·강의 승인/카테고리·언어 운영 ⑤ 학생 Q&amp;A·단어장·학습 노트·수료증(PDF).
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 3. 역할 정의 -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="num">02</div>
+    <h2>역할 정의</h2>
+  </div>
+  <div class="slide-body">
+    <div class="grid-3">
+      <div class="card">
+        <h3><span class="pill blue">STUDENT</span> 학생</h3>
+        <p>일반 회원가입(이메일 인증). 강의 탐색·수강, 리뷰, Q&amp;A 질문, 단어장, 학습 노트, 수료증.</p>
+      </div>
+      <div class="card emerald">
+        <h3><span class="pill emerald">INSTRUCTOR</span> 선생님</h3>
+        <p>학생 가입 후 "강사 신청" → 관리자 승인. 본인 강의 CRUD, Q&amp;A 답변, 강의 통계 확인.</p>
+      </div>
+      <div class="card red">
+        <h3><span class="pill red">ADMIN</span> 관리자</h3>
+        <p>시드(seed)로만 부여. 회원/강사 관리, 강의 게시 승인, 카테고리·언어 운영, 운영 대시보드.</p>
+      </div>
+    </div>
+
+    <h3 style="margin-top:22px;margin-bottom:8px;color:#1e3a5f;">권한 매트릭스</h3>
+    <table class="role-matrix">
+      <thead>
+        <tr><th>기능</th><th>GUEST</th><th>STUDENT</th><th>INSTRUCTOR</th><th>ADMIN</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>강의 목록·상세 조회</td><td class="c">●</td><td class="c">●</td><td class="c">●</td><td class="c">●</td></tr>
+        <tr><td>수강·리뷰·위시리스트</td><td class="c">·</td><td class="c">●</td><td class="c">●</td><td class="c">·</td></tr>
+        <tr><td>Q&amp;A 질문</td><td class="c">·</td><td class="c">●</td><td class="c">·</td><td class="c">·</td></tr>
+        <tr><td>Q&amp;A 답변 (본인 강의)</td><td class="c">·</td><td class="c">·</td><td class="c">●</td><td class="c">●</td></tr>
+        <tr><td>강의·섹션·차시 CRUD</td><td class="c">·</td><td class="c">·</td><td class="c">●</td><td class="c">●</td></tr>
+        <tr><td>강의 게시 승인</td><td class="c">·</td><td class="c">·</td><td class="c">·</td><td class="c">●</td></tr>
+        <tr><td>회원 관리 / 분류 운영</td><td class="c">·</td><td class="c">·</td><td class="c">·</td><td class="c">●</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- 4. 시스템 아키텍처 -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="num">03</div>
+    <h2>시스템 아키텍처 (P2)</h2>
+  </div>
+  <div class="slide-body">
+    <div class="grid-2">
+      <div class="card accent">
+        <h3>Next.js — App Router</h3>
+        <p>
+          • <strong>middleware.ts</strong> 가 <code>/admin/**</code>·<code>/instructor/**</code>·<code>/my/**</code> 경로의 JWT를 검사<br>
+          • 통과 후 페이지에서 <strong>requireRole(...)</strong>로 SSR 단계 추가 검증<br>
+          • Server Actions는 <strong>assertRoleInAction(...)</strong>로 액션별 가드
+        </p>
+      </div>
+      <div class="card">
+        <h3>Auth.js v5</h3>
+        <p>
+          • Credentials Provider (bcryptjs)<br>
+          • JWT 세션에 <code>role: string[]</code> 클레임 포함<br>
+          • 이메일 인증·정지 계정 차단 흐름은 P1에서 이어받음
+        </p>
+      </div>
+      <div class="card emerald">
+        <h3>Prisma 7 + PostgreSQL 17</h3>
+        <p>
+          • pg adapter로 단일 커넥션 풀<br>
+          • P2에서 신규 6개 모델 추가 (Q&amp;A 2, 단어장 2, 노트, 수료증)<br>
+          • 인덱스: <code>(courseId, status)</code>, <code>(userId)</code>
+        </p>
+      </div>
+      <div class="card amber">
+        <h3>수료증 PDF</h3>
+        <p>
+          • <strong>@react-pdf/renderer</strong>로 서버 렌더링<br>
+          • Route Handler <code>/api/certificates/[id]/pdf</code> 가 PDF 스트림 응답<br>
+          • S/N 부여 + UNIQUE(userId, courseId)
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. 인증 & RBAC -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="num">04</div>
+    <h2>인증 & RBAC 흐름</h2>
+  </div>
+  <div class="slide-body">
+    <div class="grid-2">
+      <div class="card">
+        <h3>3중 권한 가드</h3>
+        <p>
+          ① <strong>Middleware</strong> — 경로 prefix 매칭, 비로그인은 <code>/login?next=</code>, 권한 부족은 <code>/403</code>.<br>
+          ② <strong>requireRole()</strong> — 페이지(RSC) 진입 시점에서 세션 + role 재검증.<br>
+          ③ <strong>assertRoleInAction()</strong> — 모든 mutation 액션은 액션 첫 줄에서 검증.
+        </p>
+      </div>
+      <div class="card emerald">
+        <h3>한 명이 여러 역할</h3>
+        <p>
+          <code>users.role</code>은 배열(<code>String[]</code>).<br>
+          예) 학생이 강사 신청 후 승인되면 <code>["STUDENT", "INSTRUCTOR"]</code>가 됨.<br>
+          ADMIN은 시드에서만 부여.
+        </p>
+      </div>
+      <div class="card amber" style="grid-column: span 2;">
+        <h3>강사 승인 워크플로우</h3>
+        <div class="flow">
+          <div class="flow-node start">학생 가입</div>
+          <div class="flow-arrow">▶</div>
+          <div class="flow-node">강사 신청<br><span style="font-weight:400;font-size:11px;">/become-instructor</span></div>
+          <div class="flow-arrow">▶</div>
+          <div class="flow-node review">PENDING</div>
+          <div class="flow-arrow">▶</div>
+          <div class="flow-node ok">APPROVED + role 추가</div>
+        </div>
+        <div class="flow" style="margin-top:6px;margin-left:280px;">
+          <div class="flow-arrow">↘</div>
+          <div class="flow-node no">REJECTED + 사유<br><span style="font-weight:400;font-size:11px;">재신청 허용</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 6. 강의 게시 승인 워크플로 -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="num">05</div>
+    <h2>강의 게시 승인 워크플로우</h2>
+  </div>
+  <div class="slide-body">
+    <div class="flow" style="margin-top:6px;">
+      <div class="flow-node start">DRAFT<br><span style="font-weight:400;font-size:11px;">강사 작성</span></div>
+      <div class="flow-arrow">▶</div>
+      <div class="flow-node review">REVIEW<br><span style="font-weight:400;font-size:11px;">게시 요청</span></div>
+      <div class="flow-arrow">▶</div>
+      <div class="flow-node ok">PUBLISHED<br><span style="font-weight:400;font-size:11px;">공개</span></div>
+      <div class="flow-arrow">또는</div>
+      <div class="flow-node no">HIDDEN<br><span style="font-weight:400;font-size:11px;">반려 사유</span></div>
+    </div>
+
+    <div class="grid-2" style="margin-top:22px;">
+      <div class="card">
+        <h3>강사 측 (INSTRUCTOR)</h3>
+        <p>
+          • 강의·섹션·차시 CRUD 후 게시 요청<br>
+          • 섹션 0개면 요청 불가(서버 측 검증)<br>
+          • PUBLISHED 강의는 수정 불가, 반려된 HIDDEN은 재작업 후 재요청 가능
+        </p>
+      </div>
+      <div class="card red">
+        <h3>관리자 측 (ADMIN)</h3>
+        <p>
+          • REVIEW 강의 목록을 카드 단위로 검토<br>
+          • <strong>미리보기</strong> 버튼으로 학생 시점 페이지 확인<br>
+          • 반려 시 5자 이상 사유 필수
+        </p>
+      </div>
+    </div>
+
+    <div class="card emerald" style="margin-top:18px;">
+      <h3>관리자 운영 대시보드 KPI (실시간 집계)</h3>
+      <div class="kpi-row" style="margin-top:8px;">
+        <div class="kpi"><div class="label">전체 회원</div><div class="num">—</div></div>
+        <div class="kpi"><div class="label">활동 강사</div><div class="num">—</div></div>
+        <div class="kpi"><div class="label">강사 신청 대기</div><div class="num">·</div></div>
+        <div class="kpi"><div class="label">강의 승인 대기</div><div class="num">·</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 7. 신규 ERD -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="num">06</div>
+    <h2>신규 ERD (P2 추가 6개 + 변경 2개)</h2>
+  </div>
+  <div class="slide-body">
+    <div class="grid-3" style="gap:12px;">
+      <div class="erd-table">
+        <div class="name">QnaQuestion</div>
+        <div class="col pk"><strong>id</strong><span>cuid</span></div>
+        <div class="col fk"><strong>userId</strong><span>→users</span></div>
+        <div class="col fk"><strong>courseId</strong><span>→courses</span></div>
+        <div class="col fk"><strong>lectureId?</strong><span>→lectures</span></div>
+        <div class="col"><strong>title</strong><span>varchar</span></div>
+        <div class="col"><strong>content</strong><span>text</span></div>
+        <div class="col"><strong>status</strong><span>OPEN/ANSWERED</span></div>
+      </div>
+      <div class="erd-table">
+        <div class="name">QnaAnswer</div>
+        <div class="col pk"><strong>id</strong><span>cuid</span></div>
+        <div class="col fk"><strong>questionId</strong><span>→qna</span></div>
+        <div class="col fk"><strong>userId</strong><span>→users</span></div>
+        <div class="col"><strong>content</strong><span>text</span></div>
+        <div class="col"><strong>createdAt</strong><span>timestamptz</span></div>
+      </div>
+      <div class="erd-table">
+        <div class="name">VocabularyBook</div>
+        <div class="col pk"><strong>id</strong><span>cuid</span></div>
+        <div class="col fk"><strong>userId</strong><span>→users</span></div>
+        <div class="col fk"><strong>courseId?</strong><span>→courses</span></div>
+        <div class="col"><strong>title</strong><span>varchar</span></div>
+      </div>
+      <div class="erd-table">
+        <div class="name">VocabularyItem</div>
+        <div class="col pk"><strong>id</strong><span>cuid</span></div>
+        <div class="col fk"><strong>bookId</strong><span>→books</span></div>
+        <div class="col"><strong>term</strong><span>varchar</span></div>
+        <div class="col"><strong>meaning</strong><span>text</span></div>
+        <div class="col"><strong>example?</strong><span>text</span></div>
+        <div class="col"><strong>learned</strong><span>boolean</span></div>
+      </div>
+      <div class="erd-table">
+        <div class="name">StudyNote</div>
+        <div class="col pk"><strong>id</strong><span>cuid</span></div>
+        <div class="col fk"><strong>userId</strong><span>→users</span></div>
+        <div class="col fk"><strong>lectureId</strong><span>→lectures</span></div>
+        <div class="col"><strong>content</strong><span>text</span></div>
+        <div class="col"><strong>timestampSec?</strong><span>int</span></div>
+      </div>
+      <div class="erd-table">
+        <div class="name">Certificate</div>
+        <div class="col pk"><strong>id</strong><span>cuid</span></div>
+        <div class="col fk"><strong>userId</strong><span>→users</span></div>
+        <div class="col fk"><strong>courseId</strong><span>→courses</span></div>
+        <div class="col"><strong>serialNo</strong><span>UNIQUE</span></div>
+        <div class="col"><strong>issuedAt</strong><span>timestamptz</span></div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:18px;">
+      <div class="card amber">
+        <h3>변경: instructor_profiles</h3>
+        <p>
+          status: ACTIVE → <strong>PENDING / APPROVED / REJECTED</strong> 흐름.<br>
+          신규 컬럼 <code>rejectionReason</code>, <code>reviewedAt</code>.
+        </p>
+      </div>
+      <div class="card amber">
+        <h3>변경: courses.status</h3>
+        <p>
+          DRAFT/PUBLISHED 단순 토글 → <strong>DRAFT → REVIEW → PUBLISHED | HIDDEN</strong>.<br>
+          신규 컬럼 <code>rejectionReason</code>, <code>reviewedAt</code>.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 8. 강사 영역 -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="num">07</div>
+    <h2>강사(INSTRUCTOR) 영역</h2>
+  </div>
+  <div class="slide-body">
+    <div class="grid-2">
+      <div class="card emerald">
+        <h3>강사 대시보드</h3>
+        <p>
+          KPI 4종 — <strong>총 강의 / 총 수강생 / 평균 평점 / 미답 Q&amp;A</strong>.<br>
+          최근 강의 5개 테이블, 미답 Q&amp;A가 0이 아니면 카드가 amber로 강조.
+        </p>
+      </div>
+      <div class="card">
+        <h3>강의 CRUD</h3>
+        <p>
+          제목·slug·설명·썸네일·언어·카테고리·레벨·가격.<br>
+          PUBLISHED 강의는 수정 불가(검증 우선). DRAFT 강의만 삭제 가능.
+        </p>
+      </div>
+      <div class="card accent" style="grid-column: span 2;">
+        <h3>커리큘럼 에디터</h3>
+        <p>
+          섹션 추가/이름 변경/삭제 + 차시 추가/수정/삭제. 클라이언트 컴포넌트는 <code>useTransition</code>으로 펜딩 상태 표현.<br>
+          차시 추가 시 sortOrder는 <code>MAX + 1</code>로 자동 부여. 게시 요청 직전 섹션 0개면 서버에서 거절.
+        </p>
+      </div>
+      <div class="card">
+        <h3>Q&amp;A 답변 페이지</h3>
+        <p>
+          본인 강의 질문만 노출. 답변 작성 시 <code>QnaQuestion.status</code>를 <strong>ANSWERED</strong>로 전이.
+        </p>
+      </div>
+      <div class="card">
+        <h3>본인 강의 가드</h3>
+        <p>
+          모든 액션의 첫 줄에서 <code>course.instructorId == 내 profile.id</code> 검증.<br>
+          타인 강의 ID로 호출해도 "본인 강의가 아닙니다" 로 거절.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 9. 관리자 영역 -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="num">08</div>
+    <h2>관리자(ADMIN) 영역</h2>
+  </div>
+  <div class="slide-body">
+    <div class="grid-2">
+      <div class="card red">
+        <h3>운영 대시보드</h3>
+        <p>
+          전체 회원·강의·수강 건수·평균 평점, 강사 신청 대기·강의 승인 대기.<br>
+          최근 가입 회원/등록 강의 5개씩 노출. 대기 카운트가 1 이상이면 amber 강조.
+        </p>
+      </div>
+      <div class="card">
+        <h3>회원 관리</h3>
+        <p>
+          이메일/닉네임 검색, 상태 필터.<br>
+          상태 변경: <span class="pill emerald">ACTIVE</span><span class="pill amber">SUSPENDED</span><span class="pill">DELETED</span>.
+          ADMIN 계정은 변경 차단.
+        </p>
+      </div>
+      <div class="card">
+        <h3>강사 승인</h3>
+        <p>
+          PENDING/APPROVED/REJECTED/ALL 탭. 자기소개·경력 미리 보고 승인 또는 5자 이상 사유로 반려.<br>
+          승인 시 트랜잭션으로 profile.status 갱신 + users.role에 INSTRUCTOR 추가.
+        </p>
+      </div>
+      <div class="card">
+        <h3>강의 승인</h3>
+        <p>
+          REVIEW 강의를 카드로 검토. 미리보기 버튼으로 학생 시점 새 탭 오픈.<br>
+          반려 시 사유 저장 → 강사가 그대로 확인.
+        </p>
+      </div>
+      <div class="card amber" style="grid-column: span 2;">
+        <h3>카테고리·언어 운영</h3>
+        <p>
+          카테고리 CRUD(이름·슬러그 중복 방지) + 카테고리/언어 활성·비활성 토글.<br>
+          비활성 항목은 강사의 강의 등록 폼에 노출되지 않아 콘텐츠 품질을 유지.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 10. 학생 추가 기능 -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="num">09</div>
+    <h2>학생(STUDENT) 학습 강화 기능</h2>
+  </div>
+  <div class="slide-body">
+    <div class="grid-4">
+      <div class="card">
+        <h3>Q&amp;A</h3>
+        <p>강의 상세 페이지에서 작성, 차시 단위로 묶을 수 있음. 작성·수정·삭제 본인만.</p>
+      </div>
+      <div class="card emerald">
+        <h3>단어장</h3>
+        <p>강의별 단어장 생성. 단어·뜻·예문, 학습 완료 토글, 진행률 바 표시.</p>
+      </div>
+      <div class="card amber">
+        <h3>학습 노트</h3>
+        <p>차시별 메모. 영상 시각(초) 첨부 가능. 학습 페이지 내 인라인 작성 위젯 제공.</p>
+      </div>
+      <div class="card accent">
+        <h3>수료증 (PDF)</h3>
+        <p>진도 100% 자동 노출 → 1클릭 발급. S/N 부여, A4 가로 PDF로 즉시 다운로드.</p>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:18px;">
+      <h3>구현 포인트</h3>
+      <p>
+        ① 모든 액션은 "본인 소유" + "수강 중" 이중 검증<br>
+        ② 단어장은 강의 미연결도 허용(개인 범용 단어장)<br>
+        ③ 노트의 영상 시각은 정수만 허용, 학생이 임의 큰 값 넣어도 무시되지 않게 검증<br>
+        ④ 수료증 PDF는 <code>@react-pdf/renderer</code>의 <code>renderToBuffer</code>로 서버 응답, 캐싱 없이 inline 표시
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- 11. 개발 일정 -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="num">10</div>
+    <h2>개발 일정 (4/26 ~ 5/4, 9일)</h2>
+  </div>
+  <div class="slide-body">
+    <div class="schedule">
+      <div class="day">04-26 일</div><div class="task">P2 docs 5종 작성 — plan / requirements / dev-plan / erd / api</div>
+      <div class="day">04-27 월</div><div class="task">p1 베이스 → projects/p2 스캐폴딩, 패키지 정리, @react-pdf/renderer 추가</div>
+      <div class="day">04-28 화</div><div class="task">Prisma 스키마 P2 확장 (Q&amp;A·단어장·노트·수료증) + seed에 ADMIN/PENDING 강사</div>
+      <div class="day">04-29 수</div><div class="task">RBAC 헬퍼, middleware, 403 페이지, 강사 신청 흐름, 비밀번호 변경, Header 역할 메뉴</div>
+      <div class="day">04-30 목</div><div class="task">관리자 영역 전체 — 대시보드, 회원/강사/강의 승인, 카테고리·언어</div>
+      <div class="day">05-01 금</div><div class="task">강사 영역 전체 — 대시보드, 강의 CRUD, 커리큘럼 에디터, Q&amp;A 답변</div>
+      <div class="day">05-02 토</div><div class="task">학생 Q&amp;A·단어장·학습 노트, 수료증 발급 + PDF Route</div>
+      <div class="day">05-03 일</div><div class="task">강의 상세에 Q&amp;A 탭 통합, 학생/강사 동선 점검</div>
+      <div class="day">05-04 월</div><div class="task">통합 점검, 개발 일지 작성, 발표 자료 PDF 출력</div>
+    </div>
+  </div>
+</div>
+
+<!-- 12. 통합 점검 -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="num">11</div>
+    <h2>End-to-End 시나리오 점검</h2>
+  </div>
+  <div class="slide-body">
+    <div class="grid-2">
+      <div class="card accent">
+        <h3>① 학생 시나리오</h3>
+        <p>
+          가입 → 이메일 인증 → 로그인 → 강의 탐색 → 수강 → 차시 시청(진도 자동 저장) → Q&amp;A 작성 → 강사 답변 확인 → 진도 100% → 수료증 발급 → PDF 다운로드.
+        </p>
+      </div>
+      <div class="card emerald">
+        <h3>② 강사 시나리오</h3>
+        <p>
+          학생 가입 → 강사 신청 → 관리자 승인 → 세션 새로고침 시 강사 메뉴 노출 → 강의 생성(DRAFT) → 섹션·차시 추가 → 게시 요청 → 승인 후 PUBLISHED → 수강생 Q&amp;A 답변.
+        </p>
+      </div>
+      <div class="card red">
+        <h3>③ 관리자 시나리오</h3>
+        <p>
+          ADMIN 로그인 → 대시보드 KPI 확인 → 강사 신청 PENDING 처리 → 강의 REVIEW 승인/반려 → 부적절 회원 SUSPENDED → 카테고리 추가/비활성.
+        </p>
+      </div>
+      <div class="card amber">
+        <h3>④ 권한 침입 테스트</h3>
+        <p>
+          학생 계정으로 <code>/admin/dashboard</code>·<code>/instructor/*</code> 직접 접근 → 미들웨어가 <code>/403</code>로 리다이렉트.<br>
+          액션 호출 시 임의 ID 주입해도 본인 소유 검증으로 차단.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 13. 코드 구조 -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="num">12</div>
+    <h2>코드 구조 (projects/p2/src)</h2>
+  </div>
+  <div class="slide-body">
+    <div class="grid-2">
+      <div class="card">
+        <h3>actions/</h3>
+        <p style="font-family:'Courier New',monospace;font-size:12px;line-height:1.7;">
+          auth.ts &nbsp;— register/login/applyInstructor/changePassword<br>
+          admin.ts &nbsp;— 9개 액션 (회원·강사·강의·분류)<br>
+          instructor.ts &nbsp;— 13개 액션 (강의/섹션/차시/Q&amp;A)<br>
+          qna.ts, vocab.ts, notes.ts, certificate.ts<br>
+          courses.ts, reviews.ts, enrollments.ts, wishlist.ts (P1)
+        </p>
+      </div>
+      <div class="card accent">
+        <h3>app/ — 라우트 그룹</h3>
+        <p style="font-family:'Courier New',monospace;font-size:12px;line-height:1.7;">
+          (auth)/ — 로그인·회원가입·인증<br>
+          courses/, my/ — 학생 영역 (P1 + Q&amp;A 통합)<br>
+          my/qna · my/vocab · my/notes · my/certificates<br>
+          become-instructor/ — 강사 신청 폼<br>
+          instructor/ — 강사 전용 (layout에서 가드)<br>
+          admin/ — 관리자 전용 (layout에서 가드)<br>
+          403/ — 권한 부족 안내
+        </p>
+      </div>
+      <div class="card emerald">
+        <h3>lib/</h3>
+        <p style="font-family:'Courier New',monospace;font-size:12px;line-height:1.7;">
+          auth.ts &nbsp;— NextAuth 구성 (JWT + role 클레임)<br>
+          rbac.ts &nbsp;— requireUser / requireRole / assertRoleInAction<br>
+          certificate-pdf.tsx &nbsp;— @react-pdf/renderer<br>
+          prisma.ts &nbsp;— pg adapter 단일 클라이언트
+        </p>
+      </div>
+      <div class="card amber">
+        <h3>middleware.ts</h3>
+        <p>경로 prefix → 역할 매핑.<br>비로그인 → <code>/login?next=...</code>, 권한 부족 → <code>/403</code>.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 14. 회고 & P3 -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="num">13</div>
+    <h2>회고 & P3 예고</h2>
+  </div>
+  <div class="slide-body">
+    <div class="grid-2">
+      <div class="card emerald">
+        <h3>잘 된 점</h3>
+        <p>
+          • 미들웨어 + RSC 가드 + 서버 액션 가드 <strong>3중 방어</strong>로 권한 누락이 거의 발생하지 않음.<br>
+          • role을 배열로 둬서 "학생인 강사"라는 자연스러운 다중 역할이 그대로 표현됨.<br>
+          • 강의 게시 워크플로우(DRAFT→REVIEW→PUBLISHED/HIDDEN)가 운영 품질 기준을 강제함.
+        </p>
+      </div>
+      <div class="card amber">
+        <h3>아쉬운 점 / 트레이드오프</h3>
+        <p>
+          • 차시 순서 변경은 추가/삭제만 지원 (드래그앤드롭 보류).<br>
+          • 수료증 PDF는 한글 폰트 임베드 미적용 (영문 템플릿).<br>
+          • Q&amp;A는 단일 깊이 답변만 — 대댓글/Markdown은 P3 이월.
+        </p>
+      </div>
+      <div class="card accent" style="grid-column: span 2;">
+        <h3>P3 — 운영 단계 예고</h3>
+        <p>
+          결제(PortOne v2 단건/구독), 환불·정산, 알림(이메일/푸시) 스케줄링·배치, 모니터링·로깅(Sentry + 구조화 로깅), AI 회화/튜터 1:1 화상 수업, 그리고 기존 코드 리팩토링·성능 최적화.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 15. End -->
+<div class="slide slide-end">
+  <div class="main">P2 — Done.</div>
+  <div class="sub">학생 · 강사 · 관리자, 셋이 도는 플랫폼이 되었습니다.</div>
+  <div class="stats">
+    <div class="stat"><div class="num">45+</div><div class="label">Server Actions</div></div>
+    <div class="stat"><div class="num">6</div><div class="label">신규 모델</div></div>
+    <div class="stat"><div class="num">3</div><div class="label">Role-based 영역</div></div>
+    <div class="stat"><div class="num">9</div><div class="label">개발 일자</div></div>
+  </div>
+</div>
+
+</body>
+</html>
