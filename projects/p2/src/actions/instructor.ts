@@ -137,6 +137,13 @@ export async function instructorSubmitForReview(id: string) {
     return { error: "최소 1개 이상의 섹션이 필요합니다" };
   }
 
+  const lectureCount = await prisma.lecture.count({
+    where: { section: { courseId: id } },
+  });
+  if (lectureCount === 0) {
+    return { error: "최소 1개 이상의 차시가 필요합니다" };
+  }
+
   await prisma.course.update({
     where: { id },
     data: { status: "REVIEW", reviewedAt: null, rejectionReason: null },

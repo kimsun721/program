@@ -49,6 +49,27 @@ export default async function LearnPage({ params, searchParams }: LearnPageProps
     s.lectures.map((l) => ({ ...l, sectionTitle: s.title }))
   );
 
+  // 차시가 한 개도 없는 강의 — 빈 학습 페이지 대신 안내 화면을 보여준다.
+  if (allLectures.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center px-6">
+        <div className="max-w-md w-full rounded-xl bg-gray-800 p-8 text-center text-white">
+          <div className="text-5xl">🎬</div>
+          <h1 className="mt-4 text-2xl font-bold">{course.title}</h1>
+          <p className="mt-2 text-gray-300">
+            아직 강사가 차시를 등록하지 않았습니다. 콘텐츠가 추가되면 이 페이지에서 바로 수강할 수 있습니다.
+          </p>
+          <a
+            href="/my"
+            className="mt-6 inline-block rounded-md bg-blue-600 px-4 py-2 text-sm font-medium"
+          >
+            내 강의로 돌아가기
+          </a>
+        </div>
+      </div>
+    );
+  }
+
   const currentLecture = qLectureId
     ? allLectures.find((l) => l.id === qLectureId)
     : allLectures[0];
