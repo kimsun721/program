@@ -3,7 +3,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 
 function createPrismaClient() {
   const adapter = new PrismaPg({
-    connectionString: process.env.DATABASE_URL ?? "postgresql://lingua:lingua@localhost:5432/linguaclass",
+    connectionString: process.env.DATABASE_URL ?? "postgresql://lingua:lingua@localhost:5433/linguaclass_p2",
   });
   return new PrismaClient({
     adapter,

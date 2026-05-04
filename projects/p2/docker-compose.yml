@@ -1,26 +1,24 @@
-version: "3.9"
-
 services:
   postgres:
     image: postgres:17
-    container_name: linguaclass-postgres
+    container_name: linguaclass-p2-postgres
     restart: unless-stopped
     environment:
       POSTGRES_USER: lingua
       POSTGRES_PASSWORD: lingua
-      POSTGRES_DB: linguaclass
+      POSTGRES_DB: linguaclass_p2
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
   mailhog:
     image: mailhog/mailhog:latest
-    container_name: linguaclass-mailhog
+    container_name: linguaclass-p2-mailhog
     restart: unless-stopped
     ports:
-      - "1025:1025"
-      - "8025:8025"
+      - "1026:1025"
+      - "8026:8025"
 
 volumes:
   postgres_data:

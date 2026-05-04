@@ -3,7 +3,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcryptjs";
 
 const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL ?? "postgresql://lingua:lingua@localhost:5432/linguaclass",
+  connectionString: process.env.DATABASE_URL ?? "postgresql://lingua:lingua@localhost:5433/linguaclass_p2",
 });
 const prisma = new PrismaClient({ adapter });
 
