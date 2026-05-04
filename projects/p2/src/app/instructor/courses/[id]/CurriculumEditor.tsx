@@ -10,6 +10,7 @@ import {
   instructorUpdateLecture,
   instructorUpdateSection,
 } from "@/actions/instructor";
+import { parseVideoSource } from "@/lib/video";
 
 type Lecture = {
   id: string;
@@ -254,7 +255,13 @@ function LectureRow({
         <div className="text-xs text-slate-500">
           {Math.floor(lecture.duration / 60)}분{" "}
           {lecture.isFreePreview && "· 무료 미리보기"}{" "}
-          {lecture.hlsUrl ? "· 영상 등록됨" : "· 영상 미등록"}
+          {(() => {
+            const src = parseVideoSource(lecture.hlsUrl);
+            if (!src) return "· 영상 미등록";
+            if (src.kind === "youtube") return "· YouTube";
+            if (src.kind === "hls") return "· HLS 스트리밍";
+            return "· 영상 URL (형식 미지원 가능)";
+          })()}
         </div>
       </div>
       <div className="flex gap-2">
@@ -309,7 +316,7 @@ function NewLectureForm({
         />
         <input
           name="hlsUrl"
-          placeholder="HLS URL (선택)"
+          placeholder="영상 URL (YouTube 또는 HLS .m3u8)"
           className="rounded border px-2 py-1.5 text-sm"
         />
         <input
@@ -379,7 +386,7 @@ function LectureEditForm({
         <input
           name="hlsUrl"
           defaultValue={lecture.hlsUrl ?? ""}
-          placeholder="HLS URL (선택)"
+          placeholder="영상 URL (YouTube 또는 HLS .m3u8)"
           className="rounded border px-2 py-1.5 text-sm"
         />
         <input

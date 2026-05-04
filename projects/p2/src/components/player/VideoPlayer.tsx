@@ -3,6 +3,8 @@
 import { useEffect, useRef, useCallback, useState } from "react";
 import Hls from "hls.js";
 import { saveProgress } from "@/actions/enrollments";
+import { parseVideoSource } from "@/lib/video";
+import YouTubePlayer from "./YouTubePlayer";
 
 interface VideoPlayerProps {
   src: string;
@@ -12,7 +14,24 @@ interface VideoPlayerProps {
   onProgress?: (seconds: number, completed: boolean) => void;
 }
 
-export default function VideoPlayer({
+export default function VideoPlayer(props: VideoPlayerProps) {
+  const source = parseVideoSource(props.src);
+
+  if (source?.kind === "youtube") {
+    return (
+      <YouTubePlayer
+        videoId={source.videoId}
+        enrollmentId={props.enrollmentId}
+        lectureId={props.lectureId}
+        initialWatchedSeconds={props.initialWatchedSeconds ?? 0}
+      />
+    );
+  }
+
+  return <HlsVideoPlayer {...props} />;
+}
+
+function HlsVideoPlayer({
   src,
   enrollmentId,
   lectureId,
