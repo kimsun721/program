@@ -4,6 +4,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/lib/auth";
+import { SessionAutoRefresh } from "@/components/auth/SessionAutoRefresh";
 
 export const metadata: Metadata = {
   title: {
@@ -24,7 +25,8 @@ export default async function RootLayout({
   return (
     <html lang="ko">
       <body className="min-h-screen flex flex-col antialiased">
-        <SessionProvider session={session}>
+        <SessionProvider session={session} refetchOnWindowFocus>
+          <SessionAutoRefresh />
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
