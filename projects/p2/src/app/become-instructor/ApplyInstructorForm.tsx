@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { applyInstructor } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
@@ -17,6 +18,7 @@ type Props = {
 };
 
 export function ApplyInstructorForm({ defaultValues }: Props) {
+  const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
@@ -29,7 +31,11 @@ export function ApplyInstructorForm({ defaultValues }: Props) {
         startTransition(async () => {
           const res = await applyInstructor(fd);
           if ("error" in res) setError(res.error ?? null);
-          else setSuccess(res.success ?? null);
+          else {
+            setSuccess(res.success ?? null);
+            // 서버에서 PENDING 으로 바뀌었으니 페이지를 새로 그려 폼 → 안내문으로 전환
+            router.refresh();
+          }
         });
       }}
       className="space-y-4"
@@ -54,7 +60,7 @@ export function ApplyInstructorForm({ defaultValues }: Props) {
         />
       </div>
       <div>
-        <Label htmlFor="description">자기소개 (30자 이상)</Label>
+        <Label htmlFor="description">자기소개 (10자 이상)</Label>
         <Textarea
           id="description"
           name="description"

@@ -33,7 +33,7 @@ const courseSchema = z.object({
     .string()
     .min(3)
     .regex(/^[a-z0-9-]+$/, "slug는 소문자/숫자/-만 사용 가능합니다"),
-  description: z.string().min(20, "설명은 20자 이상이어야 합니다"),
+  description: z.string().min(10, "설명은 10자 이상이어야 합니다"),
   thumbnail: z.string().url().optional().or(z.literal("")),
   level: z.enum(["BEGINNER", "INTERMEDIATE", "ADVANCED", "EXPERT"]),
   price: z.coerce.number().int().min(0),
@@ -78,7 +78,9 @@ export async function instructorUpdateCourse(id: string, formData: FormData) {
   if (!own.ok) return { error: own.error };
 
   if (own.course.status === "PUBLISHED") {
-    return { error: "게시된 강의는 수정할 수 없습니다 (먼저 비공개 요청)" };
+    return {
+      error: "공개 중인 강의는 수정할 수 없습니다. 강의 상세에서 '비공개로 전환' 후 수정해주세요.",
+    };
   }
 
   const parsed = courseSchema.safeParse({
@@ -121,6 +123,22 @@ export async function instructorDeleteCourse(id: string) {
   await prisma.course.delete({ where: { id } });
   revalidatePath("/instructor/courses");
   return { success: "삭제 완료" };
+}
+
+export async function instructorUnpublish(id: string) {
+  const own = await assertOwnsCourse(id);
+  if (!own.ok) return { error: own.error };
+  if (own.course.status !== "PUBLISHED") {
+    return { error: "공개 중인 강의만 비공개로 전환할 수 있습니다" };
+  }
+
+  await prisma.course.update({
+    where: { id },
+    data: { status: "DRAFT", reviewedAt: null, rejectionReason: null },
+  });
+  revalidatePath(`/instructor/courses/${id}`);
+  revalidatePath("/courses");
+  return { success: "비공개 처리되었습니다 (이제 수정 가능)" };
 }
 
 export async function instructorSubmitForReview(id: string) {

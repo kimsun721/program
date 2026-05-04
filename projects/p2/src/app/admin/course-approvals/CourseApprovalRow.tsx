@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { adminApproveCourse, adminRejectCourse } from "@/actions/admin";
+import { courseStatusLabel } from "@/lib/status";
 
 type Course = {
   id: string;
@@ -66,7 +67,7 @@ export function CourseApprovalRow({ course }: { course: Course }) {
                   : "bg-slate-200 text-slate-600")
           }
         >
-          {course.status}
+          {courseStatusLabel(course.status)}
         </span>
       </div>
 

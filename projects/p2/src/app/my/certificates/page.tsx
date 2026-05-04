@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 export default async function CertificatesPage() {
   const session = await auth();
-  if (!session?.user) redirect("/login?next=/my/certificates");
+  if (!session?.user) redirect("/login?callbackUrl=/my/certificates");
 
   const [issued, eligible] = await Promise.all([
     prisma.certificate.findMany({

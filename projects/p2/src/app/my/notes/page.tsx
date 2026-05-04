@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 export default async function MyNotesPage() {
   const session = await auth();
-  if (!session?.user) redirect("/login?next=/my/notes");
+  if (!session?.user) redirect("/login?callbackUrl=/my/notes");
 
   const notes = await prisma.studyNote.findMany({
     where: { userId: session.user.id },

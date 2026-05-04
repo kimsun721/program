@@ -2,6 +2,7 @@
 
 import { useTransition } from "react";
 import { adminUpdateUserStatus } from "@/actions/admin";
+import { userStatusLabel } from "@/lib/status";
 
 type Props = {
   user: {
@@ -43,7 +44,7 @@ export function UserRow({ user }: Props) {
                 : "bg-slate-200 text-slate-600")
           }
         >
-          {user.status}
+          {userStatusLabel(user.status)}
         </span>
       </td>
       <td className="px-3 py-2 text-slate-500">

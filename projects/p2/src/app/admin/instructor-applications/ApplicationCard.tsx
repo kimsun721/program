@@ -5,6 +5,7 @@ import {
   adminApproveInstructor,
   adminRejectInstructor,
 } from "@/actions/admin";
+import { instructorStatusLabel } from "@/lib/status";
 
 type App = {
   id: string;
@@ -63,7 +64,7 @@ export function ApplicationCard({ app }: { app: App }) {
                 : "bg-red-100 text-red-700")
           }
         >
-          {app.status}
+          {instructorStatusLabel(app.status)}
         </span>
       </div>
       <div className="mt-3 grid grid-cols-1 gap-3 md:grid-cols-2">

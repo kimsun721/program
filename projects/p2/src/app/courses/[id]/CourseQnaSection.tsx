@@ -1,6 +1,7 @@
 "use client";
 
 import { QnaCreateForm } from "./QnaCreateForm";
+import { qnaStatusLabel } from "@/lib/status";
 
 type Question = {
   id: string;
@@ -65,7 +66,7 @@ export function CourseQnaSection({
                     : "bg-emerald-100 text-emerald-700")
                 }
               >
-                {q.status}
+                {qnaStatusLabel(q.status)}
               </span>
             </div>
             <p className="mt-2 whitespace-pre-wrap text-sm text-slate-700">

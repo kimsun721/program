@@ -366,11 +366,10 @@ export async function applyInstructor(formData: FormData) {
   const career = (formData.get("career") as string | null)?.trim() ?? "";
 
   if (realName.length < 2) return { error: "실명을 입력해주세요" };
-  if (headline.length < 5) return { error: "한 줄 소개를 입력해주세요" };
-  if (description.length < 30)
-    return { error: "자기소개는 30자 이상 작성해주세요" };
-  if (career.length < 10)
-    return { error: "경력은 10자 이상 작성해주세요" };
+  if (headline.length < 2) return { error: "한 줄 소개를 입력해주세요" };
+  if (description.length < 10)
+    return { error: "자기소개를 10자 이상 작성해주세요" };
+  if (career.length < 5) return { error: "경력을 5자 이상 작성해주세요" };
 
   const existing = await prisma.instructorProfile.findUnique({
     where: { userId: session.user.id },

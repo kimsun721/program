@@ -21,7 +21,7 @@ export async function createQuestion(courseId: string, formData: FormData) {
   const lectureId = rawLecture && rawLecture.length > 0 ? rawLecture : null;
 
   if (title.length < 2) return { error: "제목을 입력해주세요" };
-  if (content.length < 5) return { error: "내용을 5자 이상 입력해주세요" };
+  if (content.length < 2) return { error: "내용을 입력해주세요" };
 
   const ok = await ensureEnrolled(session.user.id, courseId);
   if (!ok) return { error: "수강 중인 강의에만 질문할 수 있습니다" };
@@ -62,7 +62,7 @@ export async function updateQuestion(id: string, formData: FormData) {
 
   const title = ((formData.get("title") as string) ?? "").trim();
   const content = ((formData.get("content") as string) ?? "").trim();
-  if (title.length < 2 || content.length < 5)
+  if (title.length < 2 || content.length < 2)
     return { error: "내용을 올바르게 입력해주세요" };
 
   await prisma.qnaQuestion.update({

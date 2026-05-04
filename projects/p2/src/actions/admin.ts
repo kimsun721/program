@@ -105,6 +105,14 @@ export async function adminApproveCourse(courseId: string) {
     return { error: "검토 중인 강의만 승인할 수 있습니다" };
   }
 
+  // 최소 1개 차시가 있어야 수강 동선이 깨지지 않는다.
+  const lectureCount = await prisma.lecture.count({
+    where: { section: { courseId } },
+  });
+  if (lectureCount === 0) {
+    return { error: "차시가 1개 이상 있어야 공개할 수 있습니다 (반려를 권장)" };
+  }
+
   await prisma.course.update({
     where: { id: courseId },
     data: {

@@ -4,6 +4,7 @@ import { auth } from "@/lib/auth";
 import { CourseForm } from "../CourseForm";
 import { CurriculumEditor } from "./CurriculumEditor";
 import { CourseStatusActions } from "./CourseStatusActions";
+import { courseStatusLabel } from "@/lib/status";
 
 export const dynamic = "force-dynamic";
 
@@ -43,7 +44,7 @@ export default async function InstructorCourseDetail({
         <div>
           <h1 className="text-2xl font-bold">{course.title}</h1>
           <p className="mt-1 text-sm text-slate-500">
-            상태: <strong>{course.status}</strong>
+            상태: <strong>{courseStatusLabel(course.status)}</strong>
           </p>
           {course.status === "HIDDEN" && course.rejectionReason && (
             <div className="mt-2 rounded-md border border-red-200 bg-red-50 p-2 text-xs text-red-700">

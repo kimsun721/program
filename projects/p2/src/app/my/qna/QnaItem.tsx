@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { deleteQuestion, updateQuestion } from "@/actions/qna";
+import { qnaStatusLabel } from "@/lib/status";
 
 type Q = {
   id: string;
@@ -71,7 +72,7 @@ export function QnaItem({ question }: { question: Q }) {
               : "bg-emerald-100 text-emerald-700")
           }
         >
-          {question.status}
+          {qnaStatusLabel(question.status)}
         </span>
       </div>
 

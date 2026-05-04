@@ -6,7 +6,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AccountPage() {
   const session = await auth();
-  if (!session?.user) redirect("/login?next=/my/account");
+  if (!session?.user) redirect("/login?callbackUrl=/my/account");
 
   return (
     <div className="container mx-auto max-w-xl py-10">

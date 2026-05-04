@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 export default async function VocabBooksPage() {
   const session = await auth();
-  if (!session?.user) redirect("/login?next=/my/vocab");
+  if (!session?.user) redirect("/login?callbackUrl=/my/vocab");
 
   const [books, enrollments] = await Promise.all([
     prisma.vocabularyBook.findMany({

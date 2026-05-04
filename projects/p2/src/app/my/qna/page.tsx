@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 
 export default async function MyQnaPage() {
   const session = await auth();
-  if (!session?.user) redirect("/login?next=/my/qna");
+  if (!session?.user) redirect("/login?callbackUrl=/my/qna");
 
   const questions = await prisma.qnaQuestion.findMany({
     where: { userId: session.user.id },

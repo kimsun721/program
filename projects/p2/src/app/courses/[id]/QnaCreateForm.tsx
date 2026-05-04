@@ -1,5 +1,6 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { createQuestion } from "@/actions/qna";
 
@@ -9,6 +10,7 @@ type Props = {
 };
 
 export function QnaCreateForm({ courseId, lectures = [] }: Props) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -36,6 +38,7 @@ export function QnaCreateForm({ courseId, lectures = [] }: Props) {
           else {
             setSuccess(res.success ?? "등록됨");
             setOpen(false);
+            router.refresh();
           }
         });
       }}

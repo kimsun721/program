@@ -1,7 +1,9 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { instructorAnswerQna } from "@/actions/instructor";
+import { qnaStatusLabel } from "@/lib/status";
 
 type Question = {
   id: string;
@@ -21,6 +23,7 @@ type Question = {
 };
 
 export function InstructorQnaCard({ question }: { question: Question }) {
+  const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [show, setShow] = useState(false);
   const [content, setContent] = useState("");
@@ -34,6 +37,7 @@ export function InstructorQnaCard({ question }: { question: Question }) {
       else {
         setShow(false);
         setContent("");
+        router.refresh();
       }
     });
   };
@@ -57,7 +61,7 @@ export function InstructorQnaCard({ question }: { question: Question }) {
               : "bg-emerald-100 text-emerald-700")
           }
         >
-          {question.status}
+          {qnaStatusLabel(question.status)}
         </span>
       </div>
 

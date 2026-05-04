@@ -7,7 +7,7 @@ export const dynamic = "force-dynamic";
 
 export default async function BecomeInstructorPage() {
   const session = await auth();
-  if (!session?.user) redirect("/login?next=/become-instructor");
+  if (!session?.user) redirect("/login?callbackUrl=/become-instructor");
 
   const profile = await prisma.instructorProfile.findUnique({
     where: { userId: session.user.id },

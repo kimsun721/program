@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { courseStatusLabel } from "@/lib/status";
 
 export const dynamic = "force-dynamic";
 
@@ -83,7 +84,7 @@ export default async function InstructorCoursesPage() {
                         : "bg-slate-200 text-slate-600")
                 }
               >
-                {c.status}
+                {courseStatusLabel(c.status)}
               </span>
             </div>
           </div>
