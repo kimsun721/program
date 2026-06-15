@@ -32,6 +32,7 @@ model User {
   payments           Payment[]
   notifications      Notification[]
   practiceResults    PracticeResult[]
+  speakingPrompts    SpeakingPrompt[]  @relation("PromptCreator")
 
   @@index([status])
   @@map("users")
@@ -126,6 +127,7 @@ model Course {
   vocabularyBooks VocabularyBook[]
   certificates    Certificate[]
   payments        Payment[]
+  speakingPrompts SpeakingPrompt[]
 
   @@index([status])
   @@index([instructorId, status])
@@ -133,6 +135,7 @@ model Course {
   @@index([categoryId])
   @@map("courses")
 }
+
 
 model Section {
   id        String   @id @default(cuid())
@@ -268,6 +271,7 @@ model VocabularyBook {
   userId    String
   courseId  String?
   title     String
+  isPublic  Boolean  @default(false)
   createdAt DateTime @default(now())
 
   user   User             @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -275,6 +279,7 @@ model VocabularyBook {
   items  VocabularyItem[]
 
   @@index([userId])
+  @@index([courseId, isPublic])
   @@map("vocabulary_books")
 }
 
@@ -337,7 +342,8 @@ model Payment {
   amount    Int
   status    String    @default("PENDING") // PENDING | COMPLETED | FAILED | REFUNDED
   method    String    @default("CARD")    // CARD | VBANK | KAKAO | TOSS
-  pgTxId    String?   @unique
+  orderId   String?   @unique             // Toss orderId (= payment.id)
+  pgTxId    String?   @unique             // Toss paymentKey
   paidAt    DateTime?
   refundAt  DateTime?
   createdAt DateTime  @default(now())
@@ -417,4 +423,23 @@ model PracticeResult {
   @@index([userId])
   @@index([userId, mode])
   @@map("practice_results")
+}
+
+model SpeakingPrompt {
+  id        String   @id @default(cuid())
+  text      String
+  hint      String
+  courseId  String?
+  isActive  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  createdBy String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  course  Course? @relation(fields: [courseId], references: [id], onDelete: SetNull)
+  creator User    @relation("PromptCreator", fields: [createdBy], references: [id])
+
+  @@index([isActive])
+  @@index([courseId])
+  @@map("speaking_prompts")
 }

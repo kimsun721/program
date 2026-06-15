@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { initiatePayment, completePayment } from "@/actions/payments";
+import { initiatePayment } from "@/actions/payments";
 import { formatPrice } from "@/lib/utils";
 import { CreditCard, Smartphone, Building2, CheckCircle, Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -38,9 +38,9 @@ export function PaymentModal({
       setError(null);
       setStep("processing");
 
-      const initResult = await initiatePayment(courseId, method);
-      if ("error" in initResult && initResult.error) {
-        setError(initResult.error);
+      const initResult = await initiatePayment(courseId);
+      if ("error" in initResult) {
+        setError(initResult.error ?? "오류가 발생했습니다.");
         setStep("select");
         return;
       }
@@ -54,23 +54,9 @@ export function PaymentModal({
         return;
       }
 
-      // 모의 결제 처리 (300ms 딜레이)
-      await new Promise((r) => setTimeout(r, 800));
-
-      if ("paymentId" in initResult && initResult.paymentId) {
-        const completeResult = await completePayment(initResult.paymentId as string);
-        if ("error" in completeResult && completeResult.error) {
-          setError(completeResult.error);
-          setStep("select");
-          return;
-        }
-      }
-
-      setStep("done");
-      setTimeout(() => {
-        onClose();
-        router.push(`/my/${courseId}/learn`);
-      }, 1500);
+      // 유료 강의: Toss 결제 페이지로 이동
+      onClose();
+      router.push(`/payment?courseId=${courseId}`);
     });
   };
 

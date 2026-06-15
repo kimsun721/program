@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /home/sun/Desktop/sc/projects/p1 -maxdepth 1 -name *.md -o -name README*)",
+      "Bash(wc -l /home/sun/Desktop/sc/projects/p1/src/**/*.ts /home/sun/Desktop/sc/projects/p1/src/**/*.tsx)",
+      "Bash(pandoc --version)",
+      "Bash(pandoc --list-output-formats)",
+      "Bash(pandoc --list-highlight-styles)"
+    ]
+  }
+}
