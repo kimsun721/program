@@ -20,12 +20,20 @@ export async function initiatePayment(courseId: string) {
   const existing = await prisma.enrollment.findUnique({
     where: { userId_courseId: { userId: user.id, courseId } },
   });
-  if (existing) return { error: "이미 수강 중인 강의입니다." };
+  // 환불된 수강은 재등록/재결제 허용
+  if (existing && existing.status !== "REFUNDED") {
+    return { error: "이미 수강 중인 강의입니다." };
+  }
 
   if (course.price === 0) {
-    const enrollment = await prisma.enrollment.create({
-      data: { userId: user.id, courseId },
-    });
+    const enrollment = existing
+      ? await prisma.enrollment.update({
+          where: { id: existing.id },
+          data: { status: "ACTIVE", progressPct: 0 },
+        })
+      : await prisma.enrollment.create({
+          data: { userId: user.id, courseId },
+        });
     await prisma.course.update({
       where: { id: courseId },
       data: { enrollmentCount: { increment: 1 } },
@@ -35,6 +43,7 @@ export async function initiatePayment(courseId: string) {
       meta: { courseId },
     });
     revalidatePath("/my");
+    revalidatePath(`/courses/${courseId}`);
     return { success: true, free: true, enrollmentId: enrollment.id, courseId };
   }
 
@@ -79,17 +88,29 @@ export async function completePaymentToss(
 ) {
   const user = await requireUser();
 
-  const payment = await prisma.payment.findUnique({
-    where: { orderId, userId: user.id, status: "PENDING" },
+  // orderId 로 결제 조회 (상태 무관) — 새로고침/중복요청 멱등 처리용
+  const payment = await prisma.payment.findFirst({
+    where: { orderId, userId: user.id },
     include: { course: { select: { title: true, id: true } } },
   });
   if (!payment) return { error: "결제 정보를 찾을 수 없습니다." };
+
+  // 이미 완료된 결제면 멱등하게 성공 반환 (새로고침/뒤로가기 대비)
+  if (payment.status === "COMPLETED") {
+    return { success: true, courseId: payment.courseId };
+  }
+  if (payment.status !== "PENDING") {
+    return { error: "처리할 수 없는 결제 상태입니다." };
+  }
   if (payment.amount !== amount)
     return { error: "결제 금액이 일치하지 않습니다." };
 
-  // Toss API 서버 승인
+  // Toss API 서버 승인 — DB 에 저장된 신뢰 가능한 금액으로 승인
+  let tossMethod = "TOSS";
   try {
-    await confirmTossPayment(paymentKey, orderId, amount);
+    const confirmed = await confirmTossPayment(paymentKey, orderId, payment.amount);
+    // 토스가 반환한 실제 결제수단(예: "카드", "간편결제", "가상계좌")을 저장
+    if (confirmed.method) tossMethod = confirmed.method;
   } catch (e) {
     const msg = e instanceof Error ? e.message : "결제 승인 실패";
     await prisma.payment.update({
@@ -109,16 +130,23 @@ export async function completePaymentToss(
       data: {
         status: "COMPLETED",
         pgTxId: paymentKey,
-        method: "TOSS",
+        method: tossMethod,
         paidAt: new Date(),
       },
     }),
-    prisma.enrollment.create({
-      data: {
+    // 환불 후 재결제 시 기존 REFUNDED enrollment 가 있으면 재활성화 (unique 충돌 방지)
+    prisma.enrollment.upsert({
+      where: { userId_courseId: { userId: user.id, courseId: payment.courseId } },
+      create: {
         userId: user.id,
         courseId: payment.courseId,
         paymentId: payment.id,
         status: "ACTIVE",
+      },
+      update: {
+        paymentId: payment.id,
+        status: "ACTIVE",
+        progressPct: 0,
       },
     }),
   ]);

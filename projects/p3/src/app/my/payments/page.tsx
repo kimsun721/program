@@ -1,7 +1,7 @@
 import { requireUser } from "@/lib/rbac";
 import { getMyPayments } from "@/actions/payments";
-import { requestRefund } from "@/actions/payments";
 import { formatPrice, formatDate } from "@/lib/utils";
+import RefundButton from "./RefundButton";
 import { CreditCard, RefreshCw, CheckCircle, XCircle, Clock } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -23,22 +23,6 @@ const methodLabel: Record<string, string> = {
   TOSS: "토스페이",
 };
 
-async function RefundButton({ paymentId }: { paymentId: string }) {
-  async function handleRefund() {
-    "use server";
-    await requestRefund(paymentId);
-  }
-  return (
-    <form action={handleRefund}>
-      <button
-        type="submit"
-        className="text-xs text-red-500 hover:text-red-700 underline"
-      >
-        환불 요청
-      </button>
-    </form>
-  );
-}
 
 export default async function PaymentsPage() {
   await requireUser();
