@@ -5,6 +5,7 @@ import {
   toggleSpeakingPrompt,
   deleteSpeakingPrompt,
 } from "@/actions/speaking";
+import { ConfirmSubmit } from "@/components/ui/ConfirmSubmit";
 import { Mic, Plus, Trash2, ToggleLeft, ToggleRight, Globe } from "lucide-react";
 import type { Metadata } from "next";
 
@@ -174,13 +175,13 @@ export default async function InstructorPromptsPage() {
                 </form>
                 <form action={handleDelete}>
                   <input type="hidden" name="promptId" value={prompt.id} />
-                  <button
-                    type="submit"
+                  <ConfirmSubmit
+                    message="이 프롬프트를 삭제할까요?"
                     className="p-1.5 rounded-lg text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors"
                     title="삭제"
                   >
                     <Trash2 className="h-4 w-4" />
-                  </button>
+                  </ConfirmSubmit>
                 </form>
               </div>
             </div>

@@ -2,6 +2,7 @@ import { requireRole } from "@/lib/rbac";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { deleteCourseVocabBook } from "@/actions/instructor-vocab";
+import { ConfirmSubmit } from "@/components/ui/ConfirmSubmit";
 import { BookOpen, Plus, Globe, Lock, Trash2, Eye } from "lucide-react";
 import type { Metadata } from "next";
 
@@ -112,13 +113,13 @@ export default async function InstructorVocabPage() {
                 </Link>
                 <form action={deleteBook}>
                   <input type="hidden" name="bookId" value={book.id} />
-                  <button
-                    type="submit"
+                  <ConfirmSubmit
+                    message={`'${book.title}' 단어장을 삭제할까요?\n포함된 단어가 모두 삭제되며 되돌릴 수 없습니다.`}
                     className="p-1.5 rounded-lg text-red-400 hover:bg-red-50 hover:text-red-600 transition-colors"
                     title="삭제"
                   >
                     <Trash2 className="h-4 w-4" />
-                  </button>
+                  </ConfirmSubmit>
                 </form>
               </div>
             </div>

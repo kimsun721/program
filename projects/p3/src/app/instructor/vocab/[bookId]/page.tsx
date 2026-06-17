@@ -8,13 +8,13 @@ import {
   deleteVocabItem,
   updateCourseVocabBook,
 } from "@/actions/instructor-vocab";
+import { ConfirmSubmit } from "@/components/ui/ConfirmSubmit";
 import {
   ChevronLeft,
   Plus,
   Trash2,
   Globe,
   Lock,
-  Volume2,
   BookOpen,
 } from "lucide-react";
 import type { Metadata } from "next";
@@ -187,13 +187,13 @@ export default async function InstructorVocabBookPage({
               </div>
               <form action={handleDeleteItem} className="flex-shrink-0">
                 <input type="hidden" name="itemId" value={item.id} />
-                <button
-                  type="submit"
-                  className="p-1 text-gray-300 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100"
+                <ConfirmSubmit
+                  message={`'${item.term}' 단어를 삭제할까요?`}
+                  className="p-1 text-gray-300 hover:text-red-500 transition-colors md:opacity-0 md:group-hover:opacity-100"
                   title="삭제"
                 >
                   <Trash2 className="h-4 w-4" />
-                </button>
+                </ConfirmSubmit>
               </form>
             </div>
           ))}
