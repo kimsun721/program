@@ -3,664 +3,864 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LinguaClass P3 — 운영·최적화 발표</title>
+<title>LinguaClass P3 - 발표 자료</title>
 <style>
-  :root {
-    --purple: #7c3aed;
-    --blue: #2563eb;
-    --green: #059669;
-    --orange: #ea580c;
-    --teal: #0d9488;
-    --bg: #0f0f23;
-    --card: #1a1a35;
-    --border: rgba(124,58,237,0.25);
-    --text: #e2e8f0;
-    --muted: #94a3b8;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Segoe UI', 'Apple SD Gothic Neo', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    overflow: hidden;
-    height: 100vh;
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    font-family: 'Noto Sans KR', -apple-system, sans-serif;
+    background: #f0f4f8;
+    color: #1a202c;
+    margin: 0;
+    padding: 0;
   }
 
-  /* slides */
   .slide {
-    display: none;
-    width: 100vw;
-    height: 100vh;
-    padding: 52px 72px;
+    width: 1280px;
+    height: 720px;
+    margin: 20px auto;
+    background: white;
+    overflow: hidden;
+    position: relative;
+    page-break-after: always;
+    break-after: page;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  }
+  .slide:last-child { page-break-after: auto; break-after: auto; }
+
+  /* ===== 타이틀 ===== */
+  .slide-title {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 45%, #2563eb 100%);
+    display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: white;
+  }
+  .slide-title .step {
+    background: rgba(125, 211, 252, 0.18);
+    border: 1px solid rgba(125, 211, 252, 0.4);
+    color: #7dd3fc;
+    padding: 6px 16px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+  }
+  .slide-title .logo {
+    font-size: 60px;
+    font-weight: 900;
+    letter-spacing: -2px;
+    margin-bottom: 14px;
+  }
+  .slide-title .logo span { color: #7dd3fc; }
+  .slide-title .tagline {
+    font-size: 22px;
+    font-weight: 300;
+    opacity: 0.9;
+    margin-bottom: 40px;
+  }
+  .slide-title .badge-row {
+    display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+    max-width: 860px;
+  }
+  .slide-title .badge {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.28);
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .slide-title .deco {
+    position: absolute; width: 320px; height: 320px;
+    border-radius: 50%; background: rgba(255,255,255,0.05);
+  }
+  .slide-title .deco-1 { top: -90px; right: -70px; }
+  .slide-title .deco-2 { bottom: -110px; left: -70px; width: 260px; height: 260px; }
+
+  /* ===== 공통 헤더 ===== */
+  .slide-header {
+    background: linear-gradient(90deg, #1e3a5f, #2563eb);
+    color: white;
+    padding: 22px 56px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .slide-header .num {
+    background: rgba(255,255,255,0.22);
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px;
+    flex-shrink: 0;
+  }
+  .slide-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+  .slide-header .right {
+    margin-left: auto;
+    font-size: 12px; opacity: 0.85; letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .slide-body { padding: 32px 56px; height: calc(100% - 82px); overflow: hidden; }
+
+  /* ===== 카드 그리드 ===== */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+
+  .card {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 18px;
+    background: #f8fafc;
+  }
+  .card h3 {
+    font-size: 14px;
+    color: #1e3a5f;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  .card p {
+    font-size: 13px;
+    color: #334155;
+    line-height: 1.55;
+  }
+  .card.accent { border-color: #93c5fd; background: #eff6ff; }
+  .card.amber  { border-color: #fcd34d; background: #fffbeb; }
+  .card.red    { border-color: #fca5a5; background: #fef2f2; }
+  .card.emerald{ border-color: #6ee7b7; background: #ecfdf5; }
+  .card.purple { border-color: #c4b5fd; background: #f5f3ff; }
+
+  code { font-family: 'Courier New', monospace; background: #e8eef5; padding: 1px 5px; border-radius: 4px; font-size: 0.92em; }
+
+  .pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    background: #e2e8f0;
+    color: #1e293b;
+    margin: 2px 4px 2px 0;
+  }
+  .pill.blue   { background: #dbeafe; color: #1d4ed8; }
+  .pill.emerald{ background: #d1fae5; color: #047857; }
+  .pill.amber  { background: #fef3c7; color: #b45309; }
+  .pill.red    { background: #fee2e2; color: #b91c1c; }
+  .pill.purple { background: #ede9fe; color: #6d28d9; }
+
+  /* ===== 표 ===== */
+  table.role-matrix {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  table.role-matrix th, table.role-matrix td {
+    border: 1px solid #e2e8f0;
+    padding: 8px 10px;
+    text-align: left;
+  }
+  table.role-matrix thead th {
+    background: #1e3a5f;
+    color: white;
+    font-weight: 600;
+  }
+  table.role-matrix td.c { text-align: center; }
+  table.role-matrix tr:nth-child(even) td { background: #f8fafc; }
+
+  /* ===== 워크플로 다이어그램 ===== */
+  .flow {
+    display: flex; align-items: center; gap: 12px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+  }
+  .flow-node {
+    border: 2px solid #1e3a5f;
+    padding: 10px 16px;
+    border-radius: 10px;
+    background: white;
+    font-weight: 600;
+    color: #1e3a5f;
+    font-size: 13px;
+    min-width: 120px;
+    text-align: center;
+  }
+  .flow-node.start { background: #dbeafe; }
+  .flow-node.review { background: #fef3c7; border-color: #d97706; color: #92400e; }
+  .flow-node.ok { background: #d1fae5; border-color: #059669; color: #065f46; }
+  .flow-node.no { background: #fee2e2; border-color: #dc2626; color: #991b1b; }
+  .flow-arrow {
+    color: #475569;
+    font-size: 18px;
+    font-weight: 800;
+  }
+
+  /* ===== ERD ===== */
+  .erd-table {
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    overflow: hidden;
+    background: white;
+    font-size: 11.5px;
+  }
+  .erd-table .name {
+    background: #1e3a5f; color: white;
+    padding: 6px 10px; font-weight: 700;
+    text-align: center;
+  }
+  .erd-table .name.new { background: #047857; }
+  .erd-table .col {
+    padding: 4px 10px;
+    border-top: 1px solid #e2e8f0;
+    display: flex; justify-content: space-between;
+    color: #334155;
+  }
+  .erd-table .col strong { color: #1e3a5f; }
+  .erd-table .col.pk strong { color: #b91c1c; }
+  .erd-table .col.fk strong { color: #1d4ed8; }
+
+  /* ===== KPI ===== */
+  .kpi-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .kpi {
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    background: #f8fafc;
+  }
+  .kpi .label { font-size: 11px; color: #64748b; }
+  .kpi .num { font-size: 28px; font-weight: 800; color: #0f172a; margin-top: 4px; }
+
+  /* ===== 일정표 ===== */
+  .schedule {
+    display: grid; grid-template-columns: 90px 1fr; row-gap: 6px;
+    column-gap: 14px;
+    font-size: 13px;
+  }
+  .schedule .day {
+    color: #1e3a5f; font-weight: 700;
+  }
+  .schedule .task { color: #334155; }
+
+  /* ===== 종료 ===== */
+  .slide-end {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 60%, #06b6d4 100%);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
     position: relative;
     overflow: hidden;
   }
-  .slide.active { display: flex; }
-
-  /* decorative background orbs */
-  .slide::before, .slide::after {
-    content: '';
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    opacity: 0.12;
-    pointer-events: none;
+  .slide-end .main {
+    font-size: 48px; font-weight: 900; letter-spacing: -2px;
+    margin-bottom: 14px;
   }
-  .slide::before { width: 500px; height: 500px; background: var(--purple); top: -100px; right: -100px; }
-  .slide::after  { width: 400px; height: 400px; background: var(--blue);   bottom: -80px; left: -80px; }
-
-  /* typography */
-  .tag {
-    display: inline-block;
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--purple);
-    background: rgba(124,58,237,0.15);
-    border: 1px solid rgba(124,58,237,0.3);
-    border-radius: 6px;
-    padding: 4px 12px;
-    margin-bottom: 20px;
+  .slide-end .sub { font-size: 18px; opacity: 0.85; margin-bottom: 36px; }
+  .slide-end .stats { display: flex; gap: 22px; }
+  .slide-end .stat {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.25);
+    padding: 14px 22px; border-radius: 14px;
   }
-  h1 { font-size: 58px; font-weight: 900; line-height: 1.1; margin-bottom: 16px; }
-  h2 { font-size: 40px; font-weight: 800; line-height: 1.2; margin-bottom: 12px; }
-  h3 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
-  h4 { font-size: 17px; font-weight: 700; margin-bottom: 5px; }
-  p  { font-size: 17px; color: var(--muted); line-height: 1.7; }
-  .small { font-size: 13px; }
+  .slide-end .stat .num { font-size: 32px; font-weight: 800; color: #7dd3fc; }
+  .slide-end .stat .label { font-size: 12px; opacity: 0.85; }
 
-  /* gradient text */
-  .grad { background: linear-gradient(135deg, #a78bfa, #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-  .grad-green { background: linear-gradient(135deg, #34d399, #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-  .grad-orange { background: linear-gradient(135deg, #fb923c, #f43f5e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-
-  /* cards */
-  .card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    padding: 22px;
+  @page {
+    size: 1280px 720px;
+    margin: 0;
   }
-  .card-sm { padding: 14px 18px; border-radius: 12px; }
-
-  /* grid */
-  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; }
-  .grid-4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 14px; }
-
-  /* badge */
-  .badge {
-    display: inline-flex; align-items: center; gap: 5px;
-    font-size: 12px; font-weight: 700;
-    padding: 3px 9px; border-radius: 999px;
+  @media print {
+    html, body { background: white; margin: 0; padding: 0; }
+    .slide {
+      margin: 0 !important;
+      box-shadow: none;
+      page-break-after: always;
+      break-after: page;
+      width: 1280px;
+      height: 720px;
+      display: block;
+    }
+    .slide:last-child {
+      page-break-after: auto;
+      break-after: auto;
+    }
   }
-  .badge-purple { background: rgba(124,58,237,0.2); color: #a78bfa; }
-  .badge-blue   { background: rgba(37,99,235,0.2);  color: #60a5fa; }
-  .badge-green  { background: rgba(5,150,105,0.2);  color: #34d399; }
-  .badge-orange { background: rgba(234,88,12,0.2);  color: #fb923c; }
-  .badge-teal   { background: rgba(13,148,136,0.2); color: #2dd4bf; }
-  .badge-red    { background: rgba(239,68,68,0.15); color: #f87171; }
-
-  /* icon circle */
-  .ic { width: 42px; height: 42px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 21px; flex-shrink: 0; }
-  .ic-purple { background: rgba(124,58,237,0.2); }
-  .ic-blue   { background: rgba(37,99,235,0.2); }
-  .ic-green  { background: rgba(5,150,105,0.2); }
-  .ic-orange { background: rgba(234,88,12,0.2); }
-  .ic-teal   { background: rgba(13,148,136,0.2); }
-
-  /* row */
-  .row { display: flex; align-items: flex-start; gap: 14px; }
-  .row + .row { margin-top: 12px; }
-  .flex { display: flex; }
-  .gap-3 { gap: 12px; }
-  .items-center { align-items: center; }
-  .flex-1 { flex: 1; }
-
-  /* divider */
-  hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
-
-  /* number stat */
-  .stat { text-align: center; }
-  .stat-num { font-size: 34px; font-weight: 900; }
-  .stat-label { font-size: 12px; color: var(--muted); margin-top: 2px; }
-
-  /* progress bar */
-  .bar { height: 5px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; margin-top: 7px; }
-  .bar-fill { height: 100%; border-radius: 3px; }
-
-  /* code */
-  code {
-    font-family: 'Consolas', monospace;
-    font-size: 12px;
-    background: rgba(255,255,255,0.06);
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 4px;
-    padding: 2px 5px;
-    color: #93c5fd;
-  }
-
-  /* navigation */
-  #nav {
-    position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%);
-    display: flex; align-items: center; gap: 12px;
-    background: rgba(26,26,53,0.9);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    padding: 9px 18px;
-    backdrop-filter: blur(12px);
-    z-index: 100;
-  }
-  #nav button {
-    background: none; border: none; color: var(--muted); cursor: pointer;
-    font-size: 18px; padding: 4px 8px; border-radius: 6px;
-    transition: all 0.2s;
-  }
-  #nav button:hover { background: rgba(255,255,255,0.08); color: #fff; }
-  #slide-info { font-size: 13px; color: var(--muted); min-width: 48px; text-align: center; }
-
-  /* commit badge */
-  .commit-list { display: flex; flex-direction: column; gap: 9px; }
-  .commit-item { display: flex; align-items: flex-start; gap: 12px; padding: 11px 15px; background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px; }
-  .commit-hash { font-family: monospace; font-size: 11px; color: var(--muted); flex-shrink: 0; margin-top: 2px; }
 </style>
 </head>
 <body>
 
-<!-- ─── 슬라이드 1: 타이틀 ─── -->
-<div class="slide active" id="s1">
-  <div style="font-size:46px;margin-bottom:8px">🌐</div>
-  <div class="tag">Project 3 · Final Stage</div>
-  <h1><span class="grad">LinguaClass</span><br>P3 — 운영 고도화</h1>
-  <p style="font-size:20px;margin-top:6px">결제 · 알림 · 로깅 · 모니터링 · 스케줄링 · 학습 기능 확장</p>
-  <div style="display:flex;gap:10px;margin-top:28px;flex-wrap:wrap">
-    <span class="badge badge-purple">Next.js 16</span>
-    <span class="badge badge-blue">Prisma 7</span>
-    <span class="badge badge-green">PostgreSQL 17</span>
-    <span class="badge badge-orange">SM-2 알고리즘</span>
-    <span class="badge badge-teal">Web Speech API</span>
-    <span class="badge badge-red">Port 3002</span>
+<!-- 1. 타이틀 -->
+<div class="slide slide-title">
+  <div class="deco deco-1"></div>
+  <div class="deco deco-2"></div>
+  <div class="step">PROJECT 3 · 운영 단계 — 결제 · 학습 강화 · 모니터링 · 배포</div>
+  <div class="logo">Lingua<span>Class</span></div>
+  <div class="tagline">동작하는 플랫폼에서 — 돈이 돌고, 운영되고, 배포되는 서비스로</div>
+  <div class="badge-row">
+    <div class="badge">Toss Payments 결제위젯</div>
+    <div class="badge">SM-2 간격반복 학습</div>
+    <div class="badge">Web Speech 스피킹</div>
+    <div class="badge">구조화 로깅 · 인앱 알림</div>
+    <div class="badge">Cron 배치</div>
+    <div class="badge">Docker 배포</div>
   </div>
 </div>
 
-<!-- ─── 슬라이드 2: 3단계 개요 ─── -->
-<div class="slide" id="s2">
-  <div class="tag">Project Overview</div>
-  <h2>3단계 <span class="grad">누적 개발</span> 로드맵</h2>
-  <div class="grid-3" style="margin-top:28px">
-    <div class="card">
-      <div style="font-size:26px;margin-bottom:10px">🎓</div>
-      <div class="badge badge-blue" style="margin-bottom:8px">P1 — 학생 관점</div>
-      <h4>기본 수강 경험</h4>
-      <ul style="color:var(--muted);font-size:13px;line-height:1.9;margin-top:8px;padding-left:16px">
-        <li>강의 목록 · 상세 조회</li>
-        <li>수강 신청 · 진도 추적</li>
-        <li>단어장 · 노트 · Q&amp;A</li>
-        <li>수료증 발급</li>
-      </ul>
-    </div>
-    <div class="card">
-      <div style="font-size:26px;margin-bottom:10px">🔐</div>
-      <div class="badge badge-purple" style="margin-bottom:8px">P2 — 역할 분리</div>
-      <h4>인증 · 권한 관리</h4>
-      <ul style="color:var(--muted);font-size:13px;line-height:1.9;margin-top:8px;padding-left:16px">
-        <li>STUDENT / INSTRUCTOR / ADMIN</li>
-        <li>이메일 인증 · 비밀번호 재설정</li>
-        <li>강사 신청 · 강의 승인 워크플로</li>
-        <li>HLS + YouTube 동영상</li>
-      </ul>
-    </div>
-    <div class="card" style="border-color:rgba(124,58,237,0.5);background:rgba(124,58,237,0.08)">
-      <div style="font-size:26px;margin-bottom:10px">⚡</div>
-      <div class="badge badge-orange" style="margin-bottom:8px">P3 — 운영 고도화 ← Now</div>
-      <h4>결제 · 운영 · 학습</h4>
-      <ul style="color:var(--muted);font-size:13px;line-height:1.9;margin-top:8px;padding-left:16px">
-        <li>결제 시스템 (모의 PG)</li>
-        <li>인앱 알림 + 이메일 알림</li>
-        <li>구조화 로깅 + 모니터링</li>
-        <li>크론 스케줄링 · 배치</li>
-        <li>플래시카드 · 퀴즈 · 스피킹</li>
-      </ul>
-    </div>
+<!-- 2. P2 → P3 변화 -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="num">01</div>
+    <h2>P2 → P3 무엇이 달라지는가</h2>
+    <div class="right">2026-06-12 ~ 06-18</div>
   </div>
-</div>
-
-<!-- ─── 슬라이드 3: DB 스키마 ─── -->
-<div class="slide" id="s3">
-  <div class="tag">Database</div>
-  <h2>P3 <span class="grad">DB 스키마</span> 확장</h2>
-  <p style="margin-bottom:22px">기존 18개 모델 → <strong style="color:#a78bfa">23개 모델</strong>로 확장</p>
-  <div class="grid-2" style="gap:14px">
-    <div>
-      <div style="color:var(--muted);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">신규 모델 (P3)</div>
-      <div class="commit-list">
-        <div class="commit-item">
-          <div class="ic ic-teal">💳</div>
-          <div><h4>Payment</h4><p class="small">userId, courseId, amount, status(PENDING/COMPLETED/REFUNDED), method, pgTxId</p></div>
-        </div>
-        <div class="commit-item">
-          <div class="ic ic-purple">🔔</div>
-          <div><h4>Notification</h4><p class="small">userId, type(7종), title, body, link, isRead</p></div>
-        </div>
-        <div class="commit-item">
-          <div class="ic ic-blue">🗂</div>
-          <div><h4>SystemLog</h4><p class="small">level(INFO/WARN/ERROR/DEBUG), category(6종), message, meta(JSON)</p></div>
-        </div>
-        <div class="commit-item">
-          <div class="ic ic-green">📊</div>
-          <div><h4>DailyStat</h4><p class="small">date(unique), newUsers, newEnrollments, revenue, activeUsers</p></div>
-        </div>
-        <div class="commit-item">
-          <div class="ic ic-orange">🎯</div>
-          <div><h4>PracticeResult</h4><p class="small">mode(FLASHCARD/QUIZ/SPEAKING), totalItems, correctItems, durationSec</p></div>
-        </div>
-      </div>
-    </div>
-    <div>
-      <div style="color:var(--muted);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">기존 모델 확장</div>
-      <div class="card" style="margin-bottom:12px">
-        <h4>Enrollment +</h4>
-        <p class="small">paymentId FK 추가 → Payment와 1:1 연결</p>
-      </div>
-      <div class="card" style="margin-bottom:12px">
-        <h4>VocabularyItem +</h4>
-        <p class="small">easeFactor, interval, repetitions, nextReviewAt (SM-2 전용 필드)</p>
-        <div class="bar" style="margin-top:10px"><div class="bar-fill" style="width:70%;background:linear-gradient(90deg,#a78bfa,#60a5fa)"></div></div>
-      </div>
+  <div class="slide-body">
+    <div class="grid-2">
       <div class="card">
-        <h4>신규 라우트 요약</h4>
-        <div style="margin-top:8px;display:flex;flex-direction:column;gap:5px">
-          <div class="flex items-center gap-2"><span class="badge badge-blue">/my</span><span class="small">payments · notifications · practice</span></div>
-          <div class="flex items-center gap-2"><span class="badge badge-red">/admin</span><span class="small">monitoring · payments · logs</span></div>
-          <div class="flex items-center gap-2"><span class="badge badge-green">/api/cron</span><span class="small">daily-stats · weekly-reminders · cleanup</span></div>
-        </div>
+        <h3>P2 — 다중 역할 플랫폼</h3>
+        <p>
+          학생 · 강사 · 관리자 3개 역할 분리, RBAC 3중 가드,<br>
+          강사 승인 · 강의 게시 승인 워크플로우, 수료증 PDF까지.
+        </p>
+        <p style="margin-top:10px"><span class="pill blue">기능 완성</span><span class="pill">단일 머신 개발</span></p>
+      </div>
+      <div class="card accent">
+        <h3>P3 — 운영 단계</h3>
+        <p>
+          "동작하는 기능"을 <strong>실제로 운영 가능한 서비스</strong>로.<br>
+          결제로 수익 흐름을 만들고, 학습을 강화하고, 운영을 관측하고, 컨테이너로 배포.
+        </p>
+        <p style="margin-top:10px">
+          <span class="pill emerald">결제</span>
+          <span class="pill purple">학습 강화</span>
+          <span class="pill amber">관측·배치</span>
+          <span class="pill blue">배포</span>
+        </p>
+      </div>
+      <div class="card amber" style="grid-column: span 2;">
+        <h3>P3가 추가로 책임지는 영역</h3>
+        <p>
+          ① <strong>토스페이먼츠 결제위젯</strong> 연동 — 유료 수강 결제 · 환불 · 결제 내역
+          ② <strong>강사 학습자료 관리</strong> — 단어장(공개/비공개) · 스피킹 프롬프트
+          ③ <strong>학생 학습 강화</strong> — SM-2 플래시카드 · 객관식 퀴즈 · 음성인식 스피킹
+          ④ <strong>구조화 로깅 + 인앱 알림</strong> ⑤ <strong>관리자 모니터링 + Cron 배치</strong>
+          ⑥ <strong>Docker 컨테이너화 + EC2 배포</strong>.
+        </p>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ─── 슬라이드 4: 결제 시스템 ─── -->
-<div class="slide" id="s4">
-  <div class="tag">Payment</div>
-  <h2><span class="grad-orange">결제 시스템</span> — 모의 PG</h2>
-  <div class="grid-2" style="margin-top:22px;gap:22px">
-    <div>
-      <h3 style="margin-bottom:14px">결제 플로우</h3>
-      <div style="display:flex;flex-direction:column;gap:9px">
-        <div class="card card-sm flex items-center gap-3">
-          <div style="width:26px;height:26px;border-radius:50%;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">1</div>
-          <div><strong>강의 상세 → 수강 신청 버튼</strong><br><span class="small" style="color:var(--muted)">무료: 즉시 등록 / 유료: PaymentModal 오픈</span></div>
-        </div>
-        <div class="card card-sm flex items-center gap-3">
-          <div style="width:26px;height:26px;border-radius:50%;background:var(--purple);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">2</div>
-          <div><strong>결제 수단 선택</strong><br><span class="small" style="color:var(--muted)">CARD / 카카오페이 / 토스페이 / 가상계좌</span></div>
-        </div>
-        <div class="card card-sm flex items-center gap-3">
-          <div style="width:26px;height:26px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">3</div>
-          <div><strong>모의 PG 처리 (800ms)</strong><br><span class="small" style="color:var(--muted)">Payment PENDING → COMPLETED + Enrollment 트랜잭션</span></div>
-        </div>
-        <div class="card card-sm flex items-center gap-3">
-          <div style="width:26px;height:26px;border-radius:50%;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">4</div>
-          <div><strong>알림 + 로그 자동 기록</strong><br><span class="small" style="color:var(--muted)">PAYMENT_DONE 인앱 알림 + SystemLog INFO</span></div>
-        </div>
+<!-- 3. 시스템 아키텍처 (P3 추가분) -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="num">02</div>
+    <h2>시스템 아키텍처 (P3 추가분)</h2>
+  </div>
+  <div class="slide-body">
+    <div class="grid-2">
+      <div class="card emerald">
+        <h3>결제 — Toss Payments</h3>
+        <p>
+          • 클라이언트: <strong>결제위젯 SDK</strong>(<code>@tosspayments/tosspayments-sdk</code>)<br>
+          • 서버: <code>/v1/payments/confirm</code>로 승인 — 금액은 DB값으로만 검증<br>
+          • <code>gck/gsk</code> 테스트 키 세트 (위젯 전용, <code>ck</code> 키와 호환 안 됨)
+        </p>
       </div>
-    </div>
-    <div>
-      <h3 style="margin-bottom:14px">주요 기능</h3>
-      <div style="display:flex;flex-direction:column;gap:9px">
-        <div class="card card-sm">
-          <div class="flex gap-3 items-center">
-            <span style="font-size:18px">📋</span>
-            <div><strong>/my/payments</strong><br><span class="small" style="color:var(--muted)">결제 내역 · 상태 배지 · 총 지출 통계 카드</span></div>
-          </div>
-        </div>
-        <div class="card card-sm">
-          <div class="flex gap-3 items-center">
-            <span style="font-size:18px">↩️</span>
-            <div><strong>환불 정책</strong><br><span class="small" style="color:var(--muted)">진도 30% 초과 시 환불 차단 · Payment REFUNDED 처리</span></div>
-          </div>
-        </div>
-        <div class="card card-sm">
-          <div class="flex gap-3 items-center">
-            <span style="font-size:18px">🔐</span>
-            <div><strong>보안 설계</strong><br><span class="small" style="color:var(--muted)">userId 검증 · Prisma $transaction 원자성 보장</span></div>
-          </div>
-        </div>
-        <div class="card card-sm">
-          <div class="flex gap-3 items-center">
-            <span style="font-size:18px">👑</span>
-            <div><strong>/admin/payments</strong><br><span class="small" style="color:var(--muted)">전체 결제 조회 · 상태 필터 · 매출 요약</span></div>
-          </div>
-        </div>
+      <div class="card accent">
+        <h3>관측 — 로깅 & 알림</h3>
+        <p>
+          • <code>logger.info/warn/error</code> → <strong>SystemLog</strong> 테이블 적재<br>
+          • 도메인 이벤트 → <strong>Notification</strong> 생성(인앱 벨)<br>
+          • 관리자 <code>/admin/monitoring</code>·<code>/admin/logs</code>에서 조회
+        </p>
+      </div>
+      <div class="card amber">
+        <h3>배치 — Cron Route Handlers</h3>
+        <p>
+          • <code>/api/cron/daily-stats</code> · <code>weekly-reminders</code> · <code>cleanup-tokens</code><br>
+          • <code>CRON_SECRET</code> 헤더로 보호, 외부 스케줄러가 호출<br>
+          • 이메일 발송은 <strong>nodemailer</strong>(개발 MailHog → 배포 실제 SMTP)
+        </p>
+      </div>
+      <div class="card purple">
+        <h3>배포 — Docker Compose</h3>
+        <p>
+          • 멀티스테이지 Dockerfile(<code>output: standalone</code>)<br>
+          • 서비스: <strong>postgres · mailhog · migrate · app</strong><br>
+          • <code>migrate</code>가 스키마 동기화 성공 후 <code>app</code> 기동
+        </p>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ─── 슬라이드 5: 알림 + 로깅 ─── -->
-<div class="slide" id="s5">
-  <div class="tag">Notifications + Logging</div>
-  <h2><span class="grad">알림</span> · <span class="grad-orange">로깅</span> 시스템</h2>
-  <div class="grid-2" style="margin-top:22px;gap:22px">
-    <div>
-      <h3 style="margin-bottom:12px">🔔 인앱 알림</h3>
-      <div class="card" style="margin-bottom:12px">
-        <p class="small" style="margin-bottom:9px">7가지 자동 알림 트리거</p>
-        <div style="display:flex;flex-wrap:wrap;gap:5px">
-          <span class="badge badge-blue">💬 QNA_ANSWERED</span>
-          <span class="badge badge-green">✅ COURSE_APPROVED</span>
-          <span class="badge badge-red">❌ COURSE_REJECTED</span>
-          <span class="badge badge-purple">🎓 INSTRUCTOR_APPROVED</span>
-          <span class="badge badge-red">❌ INSTRUCTOR_REJECTED</span>
-          <span class="badge badge-teal">💳 PAYMENT_DONE</span>
-          <span class="badge badge-orange">🏆 COURSE_COMPLETE</span>
-        </div>
+<!-- 4. 토스 결제 연동 -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="num">03</div>
+    <h2>토스페이먼츠 결제 연동</h2>
+  </div>
+  <div class="slide-body">
+    <div class="flow" style="margin-top:2px;">
+      <div class="flow-node start">결제하기</div>
+      <div class="flow-arrow">▶</div>
+      <div class="flow-node">위젯 렌더<br><span style="font-weight:400;font-size:11px;">renderPaymentMethods</span></div>
+      <div class="flow-arrow">▶</div>
+      <div class="flow-node review">requestPayment<br><span style="font-weight:400;font-size:11px;">토스 결제창</span></div>
+      <div class="flow-arrow">▶</div>
+      <div class="flow-node">successUrl<br><span style="font-weight:400;font-size:11px;">paymentKey·orderId·amount</span></div>
+      <div class="flow-arrow">▶</div>
+      <div class="flow-node ok">서버 confirm<br><span style="font-weight:400;font-size:11px;">+ 수강 등록</span></div>
+    </div>
+
+    <div class="grid-2" style="margin-top:22px;">
+      <div class="card accent">
+        <h3>클라이언트 (위젯)</h3>
+        <p>
+          • <code>loadTossPayments(clientKey).widgets()</code><br>
+          • <code>setAmount</code> → 결제수단·약관 위젯 렌더 → <code>requestPayment</code><br>
+          • 빈 키·초기화 실패 시 에러 UI, <code>USER_CANCEL</code>만 무시
+        </p>
       </div>
-      <div class="card card-sm flex gap-3">
-        <span style="font-size:18px">🛎</span>
-        <div><strong>NotificationBell</strong><p class="small">헤더 벨 아이콘 · 빨간 배지 (max 9+) · 드롭다운 · 30초 폴링 · 클릭 시 해당 페이지 이동</p></div>
+      <div class="card emerald">
+        <h3>서버 (승인·멱등)</h3>
+        <p>
+          • <code>orderId = payment.id</code>, 승인 금액은 <strong>DB 저장값</strong>으로 검증<br>
+          • 이미 <code>COMPLETED</code>면 멱등 성공 반환 — <strong>새로고침/중복요청 안전</strong><br>
+          • 결제+수강을 <code>$transaction</code> + <code>upsert</code>로 원자 처리
+        </p>
       </div>
     </div>
-    <div>
-      <h3 style="margin-bottom:12px">🗂 구조화 로깅</h3>
-      <div class="card" style="margin-bottom:12px">
-        <p class="small" style="margin-bottom:9px"><code>logger.info/warn/error/debug(category, msg, opts)</code></p>
-        <div style="display:flex;gap:5px;flex-wrap:wrap">
-          <span class="badge badge-blue">AUTH</span>
-          <span class="badge badge-teal">PAYMENT</span>
-          <span class="badge badge-green">ENROLLMENT</span>
-          <span class="badge badge-red">ADMIN</span>
-          <span class="badge badge-orange">CRON</span>
-          <span class="badge badge-purple">SYSTEM</span>
-        </div>
+
+    <div class="card amber" style="margin-top:16px;">
+      <h3>테스트(모의) 결제</h3>
+      <p>
+        토스 공식 문서 테스트 키(<code>test_gck_docs_...</code> / <code>test_gsk_docs_...</code>)로 <strong>실제 금액 청구 없이</strong> 카드·간편결제 전 과정을 검증. 승인 응답의 실제 결제수단(카드/간편결제 등)을 그대로 저장.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- 5. 결제·수강·환불 워크플로우 -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="num">04</div>
+    <h2>결제 · 수강 · 환불 워크플로우</h2>
+  </div>
+  <div class="slide-body">
+    <div class="grid-3">
+      <div class="card">
+        <h3>무료 강의</h3>
+        <p>
+          결제 단계 없이 <code>initiatePayment</code>가 즉시 <strong>Enrollment</strong> 생성.<br>
+          이미 환불(REFUNDED)된 수강이면 재활성화.
+        </p>
       </div>
-      <div class="card card-sm" style="margin-bottom:9px">
-        <strong>/admin/logs</strong>
-        <p class="small">레벨/카테고리/검색 필터 · 분포 통계 카드 · 50건 페이지네이션</p>
+      <div class="card emerald">
+        <h3>유료 강의</h3>
+        <p>
+          <code>PENDING</code> 결제 생성 → 토스 위젯 → 승인 성공 시
+          <code>COMPLETED</code> + <strong>수강 등록</strong> 동시 처리.
+        </p>
       </div>
-      <div class="card card-sm">
-        <strong>자동 기록 시점</strong>
-        <p class="small">결제 완료/실패 · 강사/강의 승인·반려 · 크론 실행 결과 → SystemLog DB 저장</p>
+      <div class="card red">
+        <h3>환불</h3>
+        <p>
+          <strong>진도 30% 초과 시 환불 불가.</strong><br>
+          환불 시 결제 <code>REFUNDED</code> + 수강 회수, 재구매 허용.
+        </p>
+      </div>
+    </div>
+
+    <div class="flow" style="margin-top:20px;">
+      <div class="flow-node start">PENDING<br><span style="font-weight:400;font-size:11px;">결제 생성</span></div>
+      <div class="flow-arrow">▶</div>
+      <div class="flow-node ok">COMPLETED<br><span style="font-weight:400;font-size:11px;">승인 + 수강</span></div>
+      <div class="flow-arrow">▶</div>
+      <div class="flow-node no">REFUNDED<br><span style="font-weight:400;font-size:11px;">환불·회수</span></div>
+      <div class="flow-arrow">또는</div>
+      <div class="flow-node review">FAILED<br><span style="font-weight:400;font-size:11px;">승인 실패</span></div>
+    </div>
+
+    <div class="grid-2" style="margin-top:20px;">
+      <div class="card">
+        <h3>학생 — 결제 내역</h3>
+        <p><code>/my/payments</code>에서 상태·수단·금액·일자 확인. 환불은 확인 다이얼로그 + 사유 피드백.</p>
+      </div>
+      <div class="card red">
+        <h3>관리자 — 결제 관리</h3>
+        <p><code>/admin/payments</code>에서 전체 결제 페이지네이션 조회. 결제 이벤트는 SystemLog에 기록.</p>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ─── 슬라이드 6: 모니터링 ─── -->
-<div class="slide" id="s6">
-  <div class="tag">Monitoring</div>
-  <h2>Admin <span class="grad">모니터링</span> 대시보드</h2>
-  <p style="margin-bottom:20px"><code>/admin/monitoring</code> — 60초 자동 갱신 (ISR revalidate)</p>
-  <div class="grid-4" style="margin-bottom:18px">
-    <div class="card" style="text-align:center">
-      <div style="font-size:26px;margin-bottom:7px">👤</div>
-      <div class="stat-num grad">회원 수</div>
-      <div class="stat-label">오늘 신규 포함</div>
-    </div>
-    <div class="card" style="text-align:center">
-      <div style="font-size:26px;margin-bottom:7px">💳</div>
-      <div class="stat-num grad-orange">매출</div>
-      <div class="stat-label">오늘 / 주 / 누적</div>
-    </div>
-    <div class="card" style="text-align:center">
-      <div style="font-size:26px;margin-bottom:7px">📚</div>
-      <div class="stat-num grad-green">수강 현황</div>
-      <div class="stat-label">활성 / 완료</div>
-    </div>
-    <div class="card" style="text-align:center">
-      <div style="font-size:26px;margin-bottom:7px">⭐</div>
-      <div class="stat-num" style="background:linear-gradient(135deg,#fbbf24,#f59e0b);-webkit-background-clip:text;-webkit-text-fill-color:transparent">평균 평점</div>
-      <div class="stat-label">전체 리뷰 기준</div>
-    </div>
+<!-- 6. 강사 학습자료 관리 -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="num">05</div>
+    <h2>강사(INSTRUCTOR) 학습자료 관리</h2>
   </div>
-  <div class="grid-2" style="gap:14px">
-    <div class="card card-sm">
-      <h4 style="margin-bottom:7px">📊 기간별 트렌드</h4>
-      <p class="small">오늘/7일/30일 신규 회원 · 수강 · 매출 — 미니 진행 바 비교</p>
-    </div>
-    <div class="card card-sm">
-      <h4 style="margin-bottom:7px">🏆 인기 강의 TOP 5</h4>
-      <p class="small">수강자 수 기준 순위 · 평점 · 색상 진행 바</p>
-    </div>
-    <div class="card card-sm">
-      <h4 style="margin-bottom:7px">⚠️ 승인 대기 알림</h4>
-      <p class="small">강사/강의 승인 대기 건수 배너 → 원클릭 이동</p>
-    </div>
-    <div class="card card-sm">
-      <h4 style="margin-bottom:7px">🔴 최근 경고/오류</h4>
-      <p class="small">WARN/ERROR 로그 5건 미리보기 → /admin/logs 연결</p>
-    </div>
-  </div>
-</div>
-
-<!-- ─── 슬라이드 7: 크론 자동화 ─── -->
-<div class="slide" id="s7">
-  <div class="tag">Scheduling / Batch</div>
-  <h2>크론 <span class="grad">자동화</span> 파이프라인</h2>
-  <p style="margin-bottom:24px">모든 엔드포인트: <code>x-cron-secret</code> 헤더 인증 필수</p>
-  <div class="grid-3" style="gap:18px">
-    <div class="card">
-      <div class="ic ic-green" style="margin-bottom:12px">📊</div>
-      <h3>일별 통계 집계</h3>
-      <code style="display:block;margin:7px 0">/api/cron/daily-stats</code>
-      <p class="small" style="margin-top:7px">전날 신규 회원 · 수강 · 매출 · 활성 유저 수집 → DailyStat upsert. 실행 결과 SystemLog 저장</p>
-      <div class="bar" style="margin-top:12px"><div class="bar-fill" style="width:85%;background:linear-gradient(90deg,#34d399,#60a5fa)"></div></div>
-      <p class="small" style="margin-top:4px;color:var(--muted)">권장: 매일 새벽 1시</p>
-    </div>
-    <div class="card">
-      <div class="ic ic-purple" style="margin-bottom:12px">📧</div>
-      <h3>주간 학습 리마인더</h3>
-      <code style="display:block;margin:7px 0">/api/cron/weekly-reminders</code>
-      <p class="small" style="margin-top:7px">7일간 진도 없는 수강생 탐지 → 리마인더 이메일 + 인앱 알림 발송 (최대 50건)</p>
-      <div class="bar" style="margin-top:12px"><div class="bar-fill" style="width:70%;background:linear-gradient(90deg,#a78bfa,#f472b6)"></div></div>
-      <p class="small" style="margin-top:4px;color:var(--muted)">권장: 매주 월요일 오전 9시</p>
-    </div>
-    <div class="card">
-      <div class="ic ic-orange" style="margin-bottom:12px">🧹</div>
-      <h3>만료 토큰 정리</h3>
-      <code style="display:block;margin:7px 0">/api/cron/cleanup-tokens</code>
-      <p class="small" style="margin-top:7px">만료 · 사용된 EmailVerification 토큰 일괄 삭제 → DB 용량 절감 · 보안 강화</p>
-      <div class="bar" style="margin-top:12px"><div class="bar-fill" style="width:60%;background:linear-gradient(90deg,#fb923c,#f43f5e)"></div></div>
-      <p class="small" style="margin-top:4px;color:var(--muted)">권장: 매일 새벽 3시</p>
-    </div>
-  </div>
-</div>
-
-<!-- ─── 슬라이드 8: 학습 기능 ─── -->
-<div class="slide" id="s8">
-  <div class="tag">Learning Features</div>
-  <h2>클라이언트 <span class="grad">학습</span> 기능 3종</h2>
-  <div class="grid-3" style="margin-top:22px;gap:16px">
-    <div class="card" style="border-color:rgba(96,165,250,0.4)">
-      <div style="font-size:30px;margin-bottom:10px">📇</div>
-      <div class="badge badge-blue" style="margin-bottom:8px;display:inline-flex">플래시카드</div>
-      <h3 style="margin-bottom:7px">SM-2 간격 반복</h3>
-      <p class="small" style="margin-bottom:10px">카드 3D 플립 (rotateY 500ms). 몰라요/애매해요/알아요 3단계 → easeFactor · interval · nextReviewAt 자동 갱신</p>
-      <div style="display:flex;gap:5px;flex-wrap:wrap">
-        <span class="badge badge-blue">3D CSS flip</span>
-        <span class="badge badge-purple">TTS 발음</span>
-        <span class="badge badge-green">SM-2</span>
+  <div class="slide-body">
+    <div class="grid-2">
+      <div class="card emerald">
+        <h3>강의 단어장</h3>
+        <p>
+          강의에 연결된 단어장 생성 — 단어·뜻·예문 CRUD.<br>
+          <span class="pill emerald">공개</span> 시 수강생이 연습에 사용, <span class="pill">비공개</span>는 강사만.
+          삭제·토글은 확인 다이얼로그로 보호.
+        </p>
       </div>
-    </div>
-    <div class="card" style="border-color:rgba(52,211,153,0.4)">
-      <div style="font-size:30px;margin-bottom:10px">🎯</div>
-      <div class="badge badge-green" style="margin-bottom:8px;display:inline-flex">객관식 퀴즈</div>
-      <h3 style="margin-bottom:7px">4지선다 MCQ</h3>
-      <p class="small" style="margin-bottom:10px">단어장 전체에서 오답 3개 랜덤 추출. 정답/오답 즉시 컬러 피드백. 정답률 · 소요시간 · 오답 수 통계</p>
-      <div style="display:flex;gap:5px;flex-wrap:wrap">
-        <span class="badge badge-green">shuffle</span>
-        <span class="badge badge-teal">즉시 피드백</span>
-        <span class="badge badge-blue">모드 전환</span>
+      <div class="card amber">
+        <h3>스피킹 프롬프트</h3>
+        <p>
+          스피킹 연습용 문장 + 힌트 등록. 강의 연결 또는 <strong>전체 공통</strong>.<br>
+          활성/비활성 토글로 학생 노출 제어. 하드코딩을 <strong>DB화</strong>.
+        </p>
       </div>
-    </div>
-    <div class="card" style="border-color:rgba(251,146,60,0.4)">
-      <div style="font-size:30px;margin-bottom:10px">🎤</div>
-      <div class="badge badge-orange" style="margin-bottom:8px;display:inline-flex">스피킹 연습</div>
-      <h3 style="margin-bottom:7px">Web Speech API</h3>
-      <p class="small" style="margin-bottom:10px">12개 영어 프롬프트. 마이크 버튼 → 음성인식 → Dice 유사도 점수. 정확/거의 정확/틀림 3단계 판정</p>
-      <div style="display:flex;gap:5px;flex-wrap:wrap">
-        <span class="badge badge-orange">SpeechRecognition</span>
-        <span class="badge badge-red">유사도</span>
-        <span class="badge badge-purple">TTS</span>
-      </div>
-    </div>
-  </div>
-  <div class="card card-sm" style="margin-top:14px">
-    <div class="flex gap-3 items-center">
-      <div style="font-size:18px">📊</div>
-      <div><strong>/my/practice</strong> — 학습 허브<p class="small">오늘 복습 대기 단어 수 배너 · 단어장별 모드 선택 · 최근 10회 세션 기록 (정답률, 소요시간)</p></div>
-    </div>
-  </div>
-</div>
-
-<!-- ─── 슬라이드 9: 커밋 히스토리 ─── -->
-<div class="slide" id="s9">
-  <div class="tag">Git History</div>
-  <h2><span class="grad">커밋</span> 분리 전략 (8 commits)</h2>
-  <p style="margin-bottom:18px">기능 단위 독립 커밋 — 리뷰 · 롤백 · 이력 추적 용이</p>
-  <div class="commit-list">
-    <div class="commit-item">
-      <span class="commit-hash">1354dd7</span>
-      <div class="badge badge-blue" style="flex-shrink:0;min-width:64px;justify-content:center">init</div>
-      <div><strong>feat(p3): init project from p2</strong> — port 3002, DB linguaclass_p3, Radix Progress/Tooltip 추가</div>
-    </div>
-    <div class="commit-item">
-      <span class="commit-hash">e9ead5e</span>
-      <div class="badge badge-purple" style="flex-shrink:0;min-width:64px;justify-content:center">log+notify</div>
-      <div><strong>feat(p3): structured logging + in-app notification system</strong></div>
-    </div>
-    <div class="commit-item">
-      <span class="commit-hash">472a0c6</span>
-      <div class="badge badge-teal" style="flex-shrink:0;min-width:64px;justify-content:center">payment</div>
-      <div><strong>feat(p3): mock payment system</strong> — CARD/KAKAO/TOSS/VBANK, refund, /my/payments</div>
-    </div>
-    <div class="commit-item">
-      <span class="commit-hash">32674ad</span>
-      <div class="badge badge-orange" style="flex-shrink:0;min-width:64px;justify-content:center">bell</div>
-      <div><strong>feat(p3): NotificationBell in header</strong> + /my/notifications page</div>
-    </div>
-    <div class="commit-item">
-      <span class="commit-hash">6993f0f</span>
-      <div class="badge badge-red" style="flex-shrink:0;min-width:64px;justify-content:center">admin</div>
-      <div><strong>feat(p3): admin monitoring dashboard</strong> + system log viewer</div>
-    </div>
-    <div class="commit-item">
-      <span class="commit-hash">b877fdd</span>
-      <div class="badge badge-green" style="flex-shrink:0;min-width:64px;justify-content:center">cron</div>
-      <div><strong>feat(p3): cron API routes</strong> — daily-stats, weekly-reminders, cleanup-tokens</div>
-    </div>
-    <div class="commit-item">
-      <span class="commit-hash">73011e1</span>
-      <div class="badge badge-purple" style="flex-shrink:0;min-width:64px;justify-content:center">practice</div>
-      <div><strong>feat(p3): vocab flashcard + quiz (SM-2)</strong> + speaking practice (Web Speech API)</div>
-    </div>
-    <div class="commit-item">
-      <span class="commit-hash">70c3ff6</span>
-      <div class="badge badge-blue" style="flex-shrink:0;min-width:64px;justify-content:center">src</div>
-      <div><strong>feat(p3): carry over all p2 source</strong> — pages, components, lib, middleware</div>
-    </div>
-  </div>
-</div>
-
-<!-- ─── 슬라이드 10: 아키텍처 ─── -->
-<div class="slide" id="s10">
-  <div class="tag">Architecture</div>
-  <h2>P3 전체 <span class="grad">아키텍처</span></h2>
-  <div class="grid-2" style="margin-top:22px;gap:22px">
-    <div>
-      <h3 style="margin-bottom:12px">Frontend (Client Components)</h3>
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <div class="card card-sm">🔔 <strong>NotificationBell</strong> — 30초 폴링, 드롭다운, mark-as-read</div>
-        <div class="card card-sm">💳 <strong>PaymentModal</strong> — 3단계 스텝 UI, 4가지 수단</div>
-        <div class="card card-sm">📇 <strong>FlashcardPractice</strong> — SM-2 카드/퀴즈 모드 전환</div>
-        <div class="card card-sm">🎤 <strong>SpeakingPractice</strong> — Web Speech API + 유사도 판정</div>
-      </div>
-    </div>
-    <div>
-      <h3 style="margin-bottom:12px">Backend (Server Actions / Routes)</h3>
-      <div style="display:flex;flex-direction:column;gap:8px">
-        <div class="card card-sm">⚡ <strong>Server Actions</strong> — payments, notifications, practice, logs</div>
-        <div class="card card-sm">📊 <strong>Admin Routes</strong> — monitoring(60s ISR), logs, payments</div>
-        <div class="card card-sm">🔁 <strong>Cron Routes</strong> — daily-stats, reminders, cleanup</div>
-        <div class="card card-sm">🗄 <strong>Prisma 7</strong> — $transaction, N+1 방지 include, composite index</div>
-      </div>
-    </div>
-    <div style="grid-column:1/-1">
-      <h3 style="margin-bottom:12px">기술 하이라이트</h3>
-      <div style="display:flex;flex-wrap:wrap;gap:8px">
-        <span class="badge badge-purple">SM-2 Spaced Repetition</span>
-        <span class="badge badge-blue">Prisma $transaction</span>
-        <span class="badge badge-orange">Web Speech API (Dice)</span>
-        <span class="badge badge-green">Next.js Server Actions</span>
-        <span class="badge badge-teal">Structured Logging</span>
-        <span class="badge badge-red">Cron Auth (x-cron-secret)</span>
-        <span class="badge badge-purple">3D CSS Flip Animation</span>
-        <span class="badge badge-blue">Mock PG (pgTxId)</span>
-        <span class="badge badge-green">60s ISR Revalidate</span>
-        <span class="badge badge-orange">Mailhog Dev Email</span>
+      <div class="card accent" style="grid-column: span 2;">
+        <h3>학생에게 노출되는 규칙 (권한·스코핑)</h3>
+        <p>
+          • 단어장: 학생은 <strong>수강 중(ACTIVE)인 강의의 공개 단어장</strong>만 연습 가능 — 본인 소유 또는 공개+수강 조건으로 접근 검증.<br>
+          • 스피킹 프롬프트: <strong>수강 중 강의 + 전체 공통(courseId=null)</strong>만 노출 — 무관한 강의 프롬프트 유출 차단.<br>
+          • 공유 단어장의 SM-2 스케줄은 본인 소유 단어장에만 저장해 학생 간 진도 오염 방지.
+        </p>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ─── 슬라이드 11: 마무리 ─── -->
-<div class="slide" id="s11">
-  <div style="text-align:center;max-width:780px;margin:0 auto">
-    <div style="font-size:68px;margin-bottom:14px">🎉</div>
-    <div class="tag" style="margin:0 auto 18px">Project Complete</div>
-    <h1 style="font-size:52px"><span class="grad">LinguaClass</span> P3</h1>
-    <p style="font-size:19px;margin-top:10px">P1 학생 기능 → P2 역할 분리 → <strong style="color:#a78bfa">P3 운영 고도화</strong> 완성</p>
-    <div style="display:flex;justify-content:center;gap:14px;margin-top:28px;flex-wrap:wrap">
-      <div class="card" style="text-align:center;min-width:120px">
-        <div style="font-size:30px;font-weight:900;color:#a78bfa">8</div>
-        <div class="stat-label">커밋</div>
+<!-- 7. 학생 학습 강화 -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="num">06</div>
+    <h2>학생(STUDENT) 학습 강화</h2>
+  </div>
+  <div class="slide-body">
+    <div class="grid-3">
+      <div class="card accent">
+        <h3>플래시카드 — SM-2</h3>
+        <p>
+          간격 반복 알고리즘으로 복습 일정 계산.<br>
+          품질 평가에 따라 <code>easeFactor</code>·<code>interval</code>·<code>repetitions</code>·<code>nextReviewAt</code> 갱신.
+        </p>
       </div>
-      <div class="card" style="text-align:center;min-width:120px">
-        <div style="font-size:30px;font-weight:900;color:#60a5fa">23</div>
-        <div class="stat-label">DB 모델</div>
+      <div class="card emerald">
+        <h3>객관식 퀴즈</h3>
+        <p>
+          단어장에서 4지선다 자동 생성.<br>
+          정답률을 <strong>PracticeResult</strong>에 누적해 통계 카드로 표시.
+        </p>
       </div>
-      <div class="card" style="text-align:center;min-width:120px">
-        <div style="font-size:30px;font-weight:900;color:#34d399">3</div>
-        <div class="stat-label">크론 작업</div>
-      </div>
-      <div class="card" style="text-align:center;min-width:120px">
-        <div style="font-size:30px;font-weight:900;color:#fb923c">3</div>
-        <div class="stat-label">학습 모드</div>
-      </div>
-      <div class="card" style="text-align:center;min-width:120px">
-        <div style="font-size:30px;font-weight:900;color:#f472b6">7</div>
-        <div class="stat-label">알림 타입</div>
+      <div class="card amber">
+        <h3>스피킹 연습</h3>
+        <p>
+          <strong>Web Speech API</strong> 음성 인식 + TTS 발음 듣기.<br>
+          강사 프롬프트(없으면 기본 12종 폴백)로 문장 따라 말하기.
+        </p>
       </div>
     </div>
-    <p style="margin-top:24px;font-size:15px;color:var(--muted)">
-      결제 · 알림 · 로깅 · 모니터링 · 스케줄링 · 플래시카드(SM-2) · 퀴즈 · 스피킹(Web Speech)
-    </p>
+
+    <div class="card purple" style="margin-top:18px;">
+      <h3>"오늘 복습" 동선 & 학습 워크플로우 개선</h3>
+      <p>
+        • <code>/my/practice</code>에서 내 단어장 + 강사 제공 단어장을 함께 노출, 복습 대기 개수 뱃지 표시.<br>
+        • 영상 시청 완료는 <strong>되돌려지지 않게(sticky)</strong> + 시청 시간은 단조 증가 — 복습하다 완료가 풀리는 버그 제거.<br>
+        • 학습 페이지에 <strong>이전/다음 강의 이동 + 수동 "완료로 표시"</strong> 추가 — 영상 없는 차시도 수료 가능.
+      </p>
+    </div>
   </div>
 </div>
 
-<!-- ─── Navigation ─── -->
-<div id="nav">
-  <button onclick="go(-1)">&#8592;</button>
-  <span id="slide-info">1 / 11</span>
-  <button onclick="go(1)">&#8594;</button>
+<!-- 8. 로깅 & 알림 -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="num">07</div>
+    <h2>구조화 로깅 & 인앱 알림</h2>
+  </div>
+  <div class="slide-body">
+    <div class="grid-2">
+      <div class="card accent">
+        <h3>구조화 로깅 (SystemLog)</h3>
+        <p>
+          • <code>logger.info/warn/error(category, message, { userId, meta })</code><br>
+          • 카테고리: <code>AUTH · PAYMENT · ENROLLMENT · ADMIN · CRON · SYSTEM</code><br>
+          • 로깅 실패가 본 기능을 막지 않도록 <strong>try/catch 격리</strong>
+        </p>
+      </div>
+      <div class="card emerald">
+        <h3>인앱 알림 (Notification)</h3>
+        <p>
+          • 도메인 이벤트 → 알림 생성: <code>QNA_ANSWERED</code>, <code>PAYMENT_DONE</code>,
+          <code>COURSE_APPROVED/REJECTED</code>, <code>INSTRUCTOR_APPROVED</code> 등<br>
+          • 헤더 <strong>NotificationBell</strong> + <code>/my/notifications</code>
+        </p>
+      </div>
+      <div class="card amber" style="grid-column: span 2;">
+        <h3>왜 분리했나</h3>
+        <p>
+          로그는 <strong>운영자가 사후에 추적</strong>하는 기록(상태 전이·실패 원인), 알림은 <strong>사용자에게 즉시 전달</strong>하는 이벤트.
+          결제 승인/실패처럼 하나의 사건이 <em>양쪽 모두</em>를 남긴다 — 관리자는 로그로 추적하고, 사용자는 알림으로 결과를 받는다.
+        </p>
+      </div>
+    </div>
+  </div>
 </div>
 
-<script>
-  const slides = document.querySelectorAll('.slide');
-  let cur = 0;
-  function go(d) {
-    slides[cur].classList.remove('active');
-    cur = Math.max(0, Math.min(slides.length - 1, cur + d));
-    slides[cur].classList.add('active');
-    document.getElementById('slide-info').textContent = (cur + 1) + ' / ' + slides.length;
-  }
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'ArrowRight' || e.key === ' ') go(1);
-    else if (e.key === 'ArrowLeft') go(-1);
-  });
-</script>
+<!-- 9. 관리자 모니터링 & 배치 -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="num">08</div>
+    <h2>관리자 모니터링 & Cron 배치</h2>
+  </div>
+  <div class="slide-body">
+    <div class="grid-2">
+      <div class="card red">
+        <h3>모니터링 대시보드</h3>
+        <p>
+          <code>/admin/monitoring</code> — 일별 통계(DailyStat) 추이.<br>
+          <code>/admin/logs</code> — 레벨·카테고리 필터로 시스템 로그 열람.<br>
+          <code>/admin/payments</code> — 결제 현황.
+        </p>
+      </div>
+      <div class="card amber">
+        <h3>Cron Route Handlers</h3>
+        <p>
+          • <code>daily-stats</code> — 일별 지표 집계 적재<br>
+          • <code>weekly-reminders</code> — 진도 정체 학생에게 학습 리마인드 메일<br>
+          • <code>cleanup-tokens</code> — 만료 이메일 토큰 정리
+        </p>
+      </div>
+      <div class="card accent" style="grid-column: span 2;">
+        <h3>보호 & 실행</h3>
+        <p>
+          모든 cron 엔드포인트는 <code>Authorization: Bearer ${CRON_SECRET}</code> 검증 후 동작 — 외부에서 임의 호출 차단.
+          외부 스케줄러(EventBridge/crontab 등)가 주기적으로 호출하는 구조로, 배치 로직을 앱과 한 코드베이스에서 관리.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 10. 신규/변경 ERD -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="num">09</div>
+    <h2>신규 ERD (P3 추가 6개 + 변경)</h2>
+  </div>
+  <div class="slide-body">
+    <div class="grid-3" style="gap:12px;">
+      <div class="erd-table">
+        <div class="name new">Payment</div>
+        <div class="col pk"><strong>id</strong><span>cuid</span></div>
+        <div class="col fk"><strong>userId</strong><span>→users</span></div>
+        <div class="col fk"><strong>courseId</strong><span>→courses</span></div>
+        <div class="col"><strong>amount</strong><span>int</span></div>
+        <div class="col"><strong>status</strong><span>PENDING…REFUNDED</span></div>
+        <div class="col"><strong>method</strong><span>카드/간편결제</span></div>
+        <div class="col"><strong>orderId?</strong><span>UNIQUE</span></div>
+        <div class="col"><strong>pgTxId?</strong><span>paymentKey</span></div>
+      </div>
+      <div class="erd-table">
+        <div class="name new">SpeakingPrompt</div>
+        <div class="col pk"><strong>id</strong><span>cuid</span></div>
+        <div class="col"><strong>text</strong><span>varchar</span></div>
+        <div class="col"><strong>hint</strong><span>varchar</span></div>
+        <div class="col fk"><strong>courseId?</strong><span>→courses</span></div>
+        <div class="col"><strong>isActive</strong><span>boolean</span></div>
+        <div class="col fk"><strong>createdBy</strong><span>→users</span></div>
+      </div>
+      <div class="erd-table">
+        <div class="name new">Notification</div>
+        <div class="col pk"><strong>id</strong><span>cuid</span></div>
+        <div class="col fk"><strong>userId</strong><span>→users</span></div>
+        <div class="col"><strong>type</strong><span>enum-like</span></div>
+        <div class="col"><strong>title</strong><span>varchar</span></div>
+        <div class="col"><strong>body</strong><span>text</span></div>
+        <div class="col"><strong>read</strong><span>boolean</span></div>
+      </div>
+      <div class="erd-table">
+        <div class="name new">SystemLog</div>
+        <div class="col pk"><strong>id</strong><span>cuid</span></div>
+        <div class="col"><strong>level</strong><span>INFO…ERROR</span></div>
+        <div class="col"><strong>category</strong><span>PAYMENT…</span></div>
+        <div class="col"><strong>message</strong><span>text</span></div>
+        <div class="col"><strong>meta</strong><span>json</span></div>
+        <div class="col fk"><strong>userId?</strong><span>→users</span></div>
+      </div>
+      <div class="erd-table">
+        <div class="name new">PracticeResult</div>
+        <div class="col pk"><strong>id</strong><span>cuid</span></div>
+        <div class="col fk"><strong>userId</strong><span>→users</span></div>
+        <div class="col fk"><strong>bookId</strong><span>→books</span></div>
+        <div class="col"><strong>mode</strong><span>FLASH/QUIZ</span></div>
+        <div class="col"><strong>correctItems</strong><span>int</span></div>
+        <div class="col"><strong>durationSec</strong><span>int</span></div>
+      </div>
+      <div class="erd-table">
+        <div class="name new">DailyStat</div>
+        <div class="col pk"><strong>id</strong><span>cuid</span></div>
+        <div class="col"><strong>date</strong><span>date</span></div>
+        <div class="col"><strong>newUsers</strong><span>int</span></div>
+        <div class="col"><strong>revenue</strong><span>int</span></div>
+        <div class="col"><strong>…</strong><span>지표</span></div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:16px;">
+      <div class="card amber">
+        <h3>변경: VocabularyBook</h3>
+        <p>신규 컬럼 <code>isPublic</code> — 강사가 공개로 두면 수강생이 연습에 사용.</p>
+      </div>
+      <div class="card amber">
+        <h3>변경: Enrollment / VocabularyItem</h3>
+        <p><code>Enrollment.paymentId</code>로 결제 연결. <code>VocabularyItem</code>에 SM-2 필드(<code>easeFactor·interval·repetitions·nextReviewAt</code>).</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 11. Docker 배포 -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="num">10</div>
+    <h2>Docker 컨테이너화 & 배포</h2>
+  </div>
+  <div class="slide-body">
+    <div class="flow" style="margin-top:2px;">
+      <div class="flow-node start">postgres<br><span style="font-weight:400;font-size:11px;">healthcheck</span></div>
+      <div class="flow-arrow">▶</div>
+      <div class="flow-node review">migrate<br><span style="font-weight:400;font-size:11px;">db push (1회성)</span></div>
+      <div class="flow-arrow">▶</div>
+      <div class="flow-node ok">app<br><span style="font-weight:400;font-size:11px;">node server.js</span></div>
+      <div class="flow-arrow">+</div>
+      <div class="flow-node">mailhog<br><span style="font-weight:400;font-size:11px;">개발 메일</span></div>
+    </div>
+
+    <div class="grid-2" style="margin-top:22px;">
+      <div class="card accent">
+        <h3>멀티스테이지 Dockerfile</h3>
+        <p>
+          • <code>deps → builder → runner</code> 3단계, Next <code>output: standalone</code>로 런너 슬림화<br>
+          • <code>NEXT_PUBLIC_*</code>는 빌드 타임 인라인이라 <strong>build arg</strong>로 주입<br>
+          • prisma CLI 의존성 문제로 마이그레이션은 <strong>builder 스테이지</strong>에서 별도 수행
+        </p>
+      </div>
+      <div class="card purple">
+        <h3>EC2 배포 흐름</h3>
+        <p>
+          • 로컬에서 이미지 빌드 → <code>docker save</code>로 전송(EC2 RAM 부족 회피)<br>
+          • EC2: <code>docker load</code> → <code>docker compose up -d --no-build</code><br>
+          • <code>.env</code>의 <code>AUTH_URL</code>을 공개 주소로(로그인·메일 링크 기준), 열린 포트(80)에 매핑
+        </p>
+      </div>
+    </div>
+
+    <div class="card amber" style="margin-top:16px;">
+      <h3>환경 분리</h3>
+      <p>
+        DB URL은 <code>DATABASE_URL</code> 환경변수 우선(도커=<code>postgres:5432</code>, 로컬=<code>localhost:5434</code>).
+        메일은 <code>SMTP_*</code> 미설정 시 MailHog, 설정 시 실제 SMTP(인증 포함)로 자동 전환.
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- 12. E2E 시나리오 -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="num">11</div>
+    <h2>End-to-End 시나리오 점검</h2>
+  </div>
+  <div class="slide-body">
+    <div class="grid-2">
+      <div class="card accent">
+        <h3>① 유료 수강 결제</h3>
+        <p>
+          강의 상세 → 결제 → 토스 위젯(테스트 카드) → 승인 → 자동 수강 등록 → 학습 시작.
+          success 새로고침해도 멱등 처리로 안전.
+        </p>
+      </div>
+      <div class="card emerald">
+        <h3>② 강사 자료 → 학생 학습</h3>
+        <p>
+          강사가 공개 단어장 + 스피킹 프롬프트 등록 → 수강생이 <code>/my/practice</code>에서
+          플래시카드·퀴즈·스피킹으로 연습 → 정답률 누적.
+        </p>
+      </div>
+      <div class="card red">
+        <h3>③ 운영 관측</h3>
+        <p>
+          결제·수강 발생 → SystemLog 적재 + 사용자 알림 → 관리자 모니터링/로그/결제 화면에서 확인 → 주간 리마인드 메일 발송.
+        </p>
+      </div>
+      <div class="card amber">
+        <h3>④ 환불 가드</h3>
+        <p>
+          진도 30% 이하만 환불 가능 — 초과 시 거절 사유 표시.
+          환불 후 재구매 가능, 결제는 REFUNDED로 보존.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 13. 회고 -->
+<div class="slide">
+  <div class="slide-header">
+    <div class="num">12</div>
+    <h2>회고 & 정리</h2>
+  </div>
+  <div class="slide-body">
+    <div class="grid-2">
+      <div class="card emerald">
+        <h3>잘 된 점</h3>
+        <p>
+          • 결제 승인을 <strong>멱등 + 트랜잭션</strong>으로 설계해 새로고침·중복요청에도 안전.<br>
+          • 로그(추적)와 알림(전달)을 분리해 운영 관측과 사용자 경험을 동시에 확보.<br>
+          • standalone + 멀티스테이지로 <strong>배포 가능한 컨테이너</strong> 완성.
+        </p>
+      </div>
+      <div class="card amber">
+        <h3>아쉬운 점 / 트레이드오프</h3>
+        <p>
+          • 결제는 토스 <strong>테스트 모드</strong> — 실거래 정산/세금계산서는 범위 외.<br>
+          • 환불은 DB 상태 처리까지(테스트 키라 실제 취소 API 미호출).<br>
+          • 공유 단어장 SM-2는 학생별 진도 테이블 대신 소유 단어장만 영속화.
+        </p>
+      </div>
+      <div class="card accent" style="grid-column: span 2;">
+        <h3>다음 단계</h3>
+        <p>
+          실 결제 계약 + 환불/정산 API, 학생별 단어장 진도 테이블(VocabularyProgress), 도메인 + HTTPS(Nginx 리버스 프록시), 외부 스케줄러 연결, 그리고 Sentry 등 외부 모니터링 연동.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 14. End -->
+<div class="slide slide-end">
+  <div class="main">P3 — Shipped.</div>
+  <div class="sub">돈이 돌고, 운영되고, 컨테이너로 배포되는 서비스가 되었습니다.</div>
+  <div class="stats">
+    <div class="stat"><div class="num">Toss</div><div class="label">결제위젯 연동</div></div>
+    <div class="stat"><div class="num">6</div><div class="label">신규 모델</div></div>
+    <div class="stat"><div class="num">3</div><div class="label">Cron 배치</div></div>
+    <div class="stat"><div class="num">Docker</div><div class="label">컨테이너 배포</div></div>
+  </div>
+</div>
+
 </body>
 </html>
