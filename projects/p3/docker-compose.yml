@@ -11,6 +11,11 @@ services:
       - "5434:5432"
     volumes:
       - postgres_data_p3:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U lingua -d linguaclass_p3"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   mailhog:
     image: mailhog/mailhog:latest
@@ -19,6 +24,33 @@ services:
     ports:
       - "1027:1025"
       - "8027:8025"
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        # NEXT_PUBLIC_* 는 빌드 타임에 인라인되므로 build arg 로도 전달
+        NEXT_PUBLIC_TOSS_CLIENT_KEY: ${NEXT_PUBLIC_TOSS_CLIENT_KEY}
+    container_name: linguaclass-p3-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "3002:3002"
+    environment:
+      DATABASE_URL: postgresql://lingua:lingua@postgres:5432/linguaclass_p3
+      AUTH_SECRET: ${AUTH_SECRET}
+      AUTH_URL: ${AUTH_URL:-http://localhost:3002}
+      SMTP_HOST: mailhog
+      SMTP_PORT: 1025
+      SMTP_FROM: ${SMTP_FROM:-noreply@linguaclass.local}
+      CRON_SECRET: ${CRON_SECRET}
+      NEXT_PUBLIC_TOSS_CLIENT_KEY: ${NEXT_PUBLIC_TOSS_CLIENT_KEY}
+      TOSS_SECRET_KEY: ${TOSS_SECRET_KEY}
+    command: >
+      sh -c "node node_modules/prisma/build/index.js migrate deploy && node server.js"
 
 volumes:
   postgres_data_p3:
