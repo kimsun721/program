@@ -3,7 +3,7 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcryptjs";
 
 const adapter = new PrismaPg({
-  connectionString: process.env.DATABASE_URL ?? "postgresql://lingua:lingua@localhost:5433/linguaclass_p2",
+  connectionString: process.env.DATABASE_URL ?? "postgresql://lingua:lingua@localhost:5434/linguaclass_p3",
 });
 const prisma = new PrismaClient({ adapter });
 
@@ -238,8 +238,11 @@ async function main() {
       },
     });
 
-    // Create 2 sections per course
-    for (let s = 1; s <= 2; s++) {
+    // Create 2 sections per course — 이미 있으면 건너뜀 (재실행 멱등)
+    const existingSections = await prisma.section.count({
+      where: { courseId: course.id },
+    });
+    for (let s = 1; existingSections === 0 && s <= 2; s++) {
       const sectionTitles = [
         [`섹션 1: 기초 다지기`, `섹션 2: 심화 학습`],
         [`섹션 1: 핵심 개념`, `섹션 2: 실전 연습`],

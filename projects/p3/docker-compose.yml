@@ -39,8 +39,8 @@ services:
         condition: service_healthy
     environment:
       DATABASE_URL: postgresql://lingua:lingua@postgres:5432/linguaclass_p3
-    # db push 는 기존 DB 상태와 무관하게 스키마를 동기화(멱등) — 추가 필드가 모두 nullable/기본값/신규
-    command: npx prisma db push
+    # db push(스키마 동기화) 후 seed(멱등) 실행 — 배포 DB에 관리자·강사·샘플 강의 채움
+    command: sh -c "npx prisma db push && npx tsx prisma/seed.ts"
     restart: "no"
 
   app:
