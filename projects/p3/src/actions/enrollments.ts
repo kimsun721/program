@@ -89,6 +89,15 @@ export async function saveProgress(
     return { error: "수강 정보를 찾을 수 없습니다" };
   }
 
+  // 기존 진도와 비교: 완료는 한 번 되면 유지(sticky), 시청시간은 단조 증가
+  const existing = await prisma.lectureProgress.findUnique({
+    where: { enrollmentId_lectureId: { enrollmentId, lectureId } },
+    select: { watchedSeconds: true, isCompleted: true },
+  });
+
+  const nextWatched = Math.max(existing?.watchedSeconds ?? 0, watchedSeconds);
+  const nextCompleted = (existing?.isCompleted ?? false) || isCompleted;
+
   await prisma.lectureProgress.upsert({
     where: {
       enrollmentId_lectureId: {
@@ -97,8 +106,8 @@ export async function saveProgress(
       },
     },
     update: {
-      watchedSeconds,
-      isCompleted,
+      watchedSeconds: nextWatched,
+      isCompleted: nextCompleted,
     },
     create: {
       enrollmentId,
@@ -138,6 +147,27 @@ export async function saveProgress(
   return { success: true, progressPct };
 }
 
+/** 수동 '완료로 표시' — 영상이 없거나 자동완료가 안 잡히는 차시 대비 */
+export async function markLectureComplete(enrollmentId: string, lectureId: string) {
+  const session = await auth();
+  if (!session?.user) return { error: "로그인이 필요합니다" };
+
+  const enrollment = await prisma.enrollment.findUnique({
+    where: { id: enrollmentId },
+    select: { id: true, userId: true, courseId: true },
+  });
+  if (!enrollment || enrollment.userId !== session.user.id) {
+    return { error: "수강 정보를 찾을 수 없습니다" };
+  }
+
+  const existing = await prisma.lectureProgress.findUnique({
+    where: { enrollmentId_lectureId: { enrollmentId, lectureId } },
+    select: { watchedSeconds: true },
+  });
+
+  return saveProgress(enrollmentId, lectureId, existing?.watchedSeconds ?? 0, true);
+}
+
 export async function enroll(courseId: string) {
   const session = await auth();
   if (!session?.user) return { error: "로그인이 필요합니다" };
@@ -148,6 +178,11 @@ export async function enroll(courseId: string) {
 
   if (!course) return { error: "강의를 찾을 수 없습니다" };
 
+  // 유료 강의는 결제 플로우(initiatePayment)를 거쳐야 한다 — 무료 등록 우회 방지
+  if (course.price > 0) {
+    return { error: "유료 강의는 결제가 필요합니다." };
+  }
+
   const existing = await prisma.enrollment.findUnique({
     where: {
       userId_courseId: {
@@ -157,15 +192,23 @@ export async function enroll(courseId: string) {
     },
   });
 
-  if (existing) return { error: "이미 수강 중인 강의입니다" };
+  // 환불된 수강은 재등록 허용 (REFUNDED 외에는 차단)
+  if (existing && existing.status !== "REFUNDED") {
+    return { error: "이미 수강 중인 강의입니다" };
+  }
 
-  const enrollment = await prisma.enrollment.create({
-    data: {
-      userId: session.user.id,
-      courseId,
-      status: "ACTIVE",
-    },
-  });
+  const enrollment = existing
+    ? await prisma.enrollment.update({
+        where: { id: existing.id },
+        data: { status: "ACTIVE", progressPct: 0 },
+      })
+    : await prisma.enrollment.create({
+        data: {
+          userId: session.user.id,
+          courseId,
+          status: "ACTIVE",
+        },
+      });
 
   // Increment enrollment count
   await prisma.course.update({

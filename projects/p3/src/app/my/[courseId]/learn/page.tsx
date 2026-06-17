@@ -2,11 +2,13 @@ import { redirect, notFound } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { getEnrollment } from "@/actions/enrollments";
 import { getCourse } from "@/actions/courses";
+import Link from "next/link";
 import VideoPlayer from "@/components/player/VideoPlayer";
 import LectureNavigation from "./LectureNavigation";
+import LectureControls from "./LectureControls";
 import { LectureNoteWidget } from "./LectureNoteWidget";
 import { formatDuration } from "@/lib/utils";
-import { Lock, CheckCircle, PlayCircle } from "lucide-react";
+import { Lock, CheckCircle } from "lucide-react";
 import type { Metadata } from "next";
 
 export async function generateMetadata({
@@ -59,22 +61,28 @@ export default async function LearnPage({ params, searchParams }: LearnPageProps
           <p className="mt-2 text-gray-300">
             아직 강사가 차시를 등록하지 않았습니다. 콘텐츠가 추가되면 이 페이지에서 바로 수강할 수 있습니다.
           </p>
-          <a
+          <Link
             href="/my"
             className="mt-6 inline-block rounded-md bg-blue-600 px-4 py-2 text-sm font-medium"
           >
             내 강의로 돌아가기
-          </a>
+          </Link>
         </div>
       </div>
     );
   }
 
-  const currentLecture = qLectureId
-    ? allLectures.find((l) => l.id === qLectureId)
-    : allLectures[0];
+  const currentIdx = qLectureId
+    ? allLectures.findIndex((l) => l.id === qLectureId)
+    : 0;
+
+  const currentLecture = allLectures[currentIdx];
 
   if (!currentLecture) notFound();
+
+  const prevLectureId = currentIdx > 0 ? allLectures[currentIdx - 1].id : null;
+  const nextLectureId =
+    currentIdx < allLectures.length - 1 ? allLectures[currentIdx + 1].id : null;
 
   // Get progress for current lecture
   const lectureProgress = enrollment.lectureProgresses.find(
@@ -134,6 +142,15 @@ export default async function LearnPage({ params, searchParams }: LearnPageProps
               </div>
             </div>
 
+            <LectureControls
+              courseId={courseId}
+              enrollmentId={enrollment.id}
+              lectureId={currentLecture.id}
+              isCompleted={lectureProgress?.isCompleted || false}
+              prevLectureId={prevLectureId}
+              nextLectureId={nextLectureId}
+            />
+
             <div className="mt-6">
               <LectureNoteWidget lectureId={currentLecture.id} />
             </div>
@@ -155,7 +172,7 @@ export default async function LearnPage({ params, searchParams }: LearnPageProps
           <div className="flex-1 overflow-y-auto">
             {course.sections.map((section) => (
               <div key={section.id}>
-                <div className="px-4 py-2 bg-gray-750 border-b border-gray-700">
+                <div className="px-4 py-2 bg-gray-700/50 border-b border-gray-700">
                   <h3 className="text-gray-300 text-xs font-semibold uppercase tracking-wide">
                     {section.title}
                   </h3>

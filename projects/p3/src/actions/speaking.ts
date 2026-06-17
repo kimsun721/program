@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { requireRole } from "@/lib/rbac";
+import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
 async function getInstructorProfile() {
@@ -74,12 +75,32 @@ export async function deleteSpeakingPrompt(promptId: string) {
   return { success: true };
 }
 
-/** 학생 실습용 — 활성 프롬프트 조회 */
-export async function getActivePrompts(courseId?: string) {
+/**
+ * 학생 실습용 — 활성 프롬프트 조회.
+ * 로그인한 학생이 수강 중(ACTIVE)인 강의에 연결된 프롬프트 + 전역 프롬프트(courseId=null)만 노출.
+ * 특정 강의에만 연결된 프롬프트가 무관한 학생에게 새어나가지 않도록 한다.
+ */
+export async function getActivePrompts() {
+  const session = await auth();
+
+  let enrolledCourseIds: string[] = [];
+  if (session?.user) {
+    const rows = await prisma.enrollment.findMany({
+      where: { userId: session.user.id, status: "ACTIVE" },
+      select: { courseId: true },
+    });
+    enrolledCourseIds = rows.map((r) => r.courseId);
+  }
+
   return prisma.speakingPrompt.findMany({
     where: {
       isActive: true,
-      ...(courseId ? { OR: [{ courseId }, { courseId: null }] } : {}),
+      OR: [
+        { courseId: null },
+        ...(enrolledCourseIds.length > 0
+          ? [{ courseId: { in: enrolledCourseIds } }]
+          : []),
+      ],
     },
     orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
     select: { id: true, text: true, hint: true },

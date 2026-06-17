@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useCallback, useState } from "react";
+import { useRouter } from "next/navigation";
 import Hls from "hls.js";
 import { saveProgress } from "@/actions/enrollments";
 import { parseVideoSource } from "@/lib/video";
@@ -38,9 +39,11 @@ function HlsVideoPlayer({
   initialWatchedSeconds = 0,
   onProgress,
 }: VideoPlayerProps) {
+  const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
   const hlsRef = useRef<Hls | null>(null);
   const lastSavedRef = useRef<number>(0);
+  const completedRef = useRef<boolean>(false);
   const saveIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isReady, setIsReady] = useState(false);
@@ -51,11 +54,16 @@ function HlsVideoPlayer({
         await saveProgress(enrollmentId, lectureId, Math.floor(currentTime), isCompleted);
         lastSavedRef.current = currentTime;
         onProgress?.(currentTime, isCompleted);
+        // 차시를 처음 완료한 순간에만 화면(체크표시·진도바)을 갱신
+        if (isCompleted && !completedRef.current) {
+          completedRef.current = true;
+          router.refresh();
+        }
       } catch (err) {
         console.error("Failed to save progress:", err);
       }
     },
-    [enrollmentId, lectureId, onProgress]
+    [enrollmentId, lectureId, onProgress, router]
   );
 
   useEffect(() => {
