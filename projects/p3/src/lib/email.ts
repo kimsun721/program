@@ -1,9 +1,15 @@
 import nodemailer from "nodemailer";
 
+const smtpPort = parseInt(process.env.SMTP_PORT || "1025");
+
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || "localhost",
-  port: parseInt(process.env.SMTP_PORT || "1025"),
-  secure: false,
+  port: smtpPort,
+  secure: smtpPort === 465, // 465=SSL, 587=STARTTLS, 1025(MailHog)=평문
+  // 실제 메일 서버는 인증 필요(MailHog 는 SMTP_USER 미설정 시 인증 없이 동작)
+  auth: process.env.SMTP_USER
+    ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
+    : undefined,
   tls: { rejectUnauthorized: false },
 });
 

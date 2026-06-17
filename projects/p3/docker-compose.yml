@@ -62,8 +62,12 @@ services:
       DATABASE_URL: postgresql://lingua:lingua@postgres:5432/linguaclass_p3
       AUTH_SECRET: ${AUTH_SECRET}
       AUTH_URL: ${AUTH_URL:-http://localhost:3002}
-      SMTP_HOST: mailhog
-      SMTP_PORT: 1025
+      NEXTAUTH_URL: ${AUTH_URL:-http://localhost:3002}
+      # 실제 메일을 쓰려면 .env 에 SMTP_HOST/USER/PASS 를 넣으면 됨 (없으면 MailHog)
+      SMTP_HOST: ${SMTP_HOST:-mailhog}
+      SMTP_PORT: ${SMTP_PORT:-1025}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
       SMTP_FROM: ${SMTP_FROM:-noreply@linguaclass.local}
       CRON_SECRET: ${CRON_SECRET}
       NEXT_PUBLIC_TOSS_CLIENT_KEY: ${NEXT_PUBLIC_TOSS_CLIENT_KEY}
