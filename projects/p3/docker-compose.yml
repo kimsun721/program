@@ -66,6 +66,8 @@ services:
       AUTH_SECRET: ${AUTH_SECRET}
       AUTH_URL: ${AUTH_URL:-http://localhost:3002}
       NEXTAUTH_URL: ${AUTH_URL:-http://localhost:3002}
+      # 공개 호스트(IP/도메인) 신뢰 — 미설정 시 세션이 안 붙어 로그인 루프
+      AUTH_TRUST_HOST: "true"
       # 실제 메일을 쓰려면 .env 에 SMTP_HOST/USER/PASS 를 넣으면 됨 (없으면 MailHog)
       SMTP_HOST: ${SMTP_HOST:-mailhog}
       SMTP_PORT: ${SMTP_PORT:-1025}

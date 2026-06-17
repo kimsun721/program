@@ -23,6 +23,9 @@ const loginSchema = z.object({
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   secret: process.env.AUTH_SECRET,
+  // self-hosted(공개 IP/도메인) 배포에서 Host 헤더를 신뢰해야 세션이 동작.
+  // 미설정 시 localhost 외 호스트에서 auth()가 실패해 보호 페이지가 로그인으로 튕긴다.
+  trustHost: true,
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
