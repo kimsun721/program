@@ -25,6 +25,23 @@ services:
       - "1027:1025"
       - "8027:8025"
 
+  # 마이그레이션 전용 1회성 서비스 — builder 스테이지(전체 node_modules + prisma CLI) 사용.
+  # standalone 런너에는 prisma CLI 의존성이 없어 migrate 를 여기서 수행한다.
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: builder
+    container_name: linguaclass-p3-migrate
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://lingua:lingua@postgres:5432/linguaclass_p3
+    # db push 는 기존 DB 상태와 무관하게 스키마를 동기화(멱등) — 추가 필드가 모두 nullable/기본값/신규
+    command: npx prisma db push
+    restart: "no"
+
   app:
     build:
       context: .
@@ -37,6 +54,8 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     ports:
       - "3002:3002"
     environment:
@@ -49,8 +68,7 @@ services:
       CRON_SECRET: ${CRON_SECRET}
       NEXT_PUBLIC_TOSS_CLIENT_KEY: ${NEXT_PUBLIC_TOSS_CLIENT_KEY}
       TOSS_SECRET_KEY: ${TOSS_SECRET_KEY}
-    command: >
-      sh -c "node node_modules/prisma/build/index.js migrate deploy && node server.js"
+    command: node server.js
 
 volumes:
   postgres_data_p3:
