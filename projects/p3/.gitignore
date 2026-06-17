@@ -35,3 +35,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# 로컬 빌드 이미지 산출물
+p3-images.tar.gz
+*.tar.gz

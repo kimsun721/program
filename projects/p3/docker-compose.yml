@@ -28,6 +28,7 @@ services:
   # 마이그레이션 전용 1회성 서비스 — builder 스테이지(전체 node_modules + prisma CLI) 사용.
   # standalone 런너에는 prisma CLI 의존성이 없어 migrate 를 여기서 수행한다.
   migrate:
+    image: linguaclass-p3-migrate:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -43,6 +44,7 @@ services:
     restart: "no"
 
   app:
+    image: linguaclass-p3-app:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -57,7 +59,8 @@ services:
       migrate:
         condition: service_completed_successfully
     ports:
-      - "3002:3002"
+      # 로컬은 3002, EC2 는 .env 에 APP_PORT=80 으로 열린 포트에 매핑
+      - "${APP_PORT:-3002}:3002"
     environment:
       DATABASE_URL: postgresql://lingua:lingua@postgres:5432/linguaclass_p3
       AUTH_SECRET: ${AUTH_SECRET}
