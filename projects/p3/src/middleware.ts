@@ -17,13 +17,18 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
+  // 쿠키 이름/보안여부는 NODE_ENV 가 아니라 실제 HTTPS 여부로 판단해야 한다.
+  // 프로덕션이라도 HTTP 로 서비스하면 NextAuth 는 비보안 쿠키(authjs.session-token)를 쓰므로
+  // __Secure- 접두사를 강제하면 미들웨어가 토큰을 못 읽어 보호 페이지가 전부 로그인으로 튕긴다.
+  const isHttps = (process.env.AUTH_URL ?? process.env.NEXTAUTH_URL ?? "").startsWith("https://");
+  const cookieName = isHttps
+    ? "__Secure-authjs.session-token"
+    : "authjs.session-token";
   const token = await getToken({
     req,
     secret: process.env.AUTH_SECRET,
-    salt:
-      process.env.NODE_ENV === "production"
-        ? "__Secure-authjs.session-token"
-        : "authjs.session-token",
+    secureCookie: isHttps,
+    salt: cookieName,
   });
 
   if (!token) {
