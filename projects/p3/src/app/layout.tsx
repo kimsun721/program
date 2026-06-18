@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
+import ConditionalFooter from "@/components/layout/ConditionalFooter";
 import { SessionProvider } from "next-auth/react";
 import { auth } from "@/lib/auth";
 import { SessionAutoRefresh } from "@/components/auth/SessionAutoRefresh";
@@ -29,7 +29,7 @@ export default async function RootLayout({
           <SessionAutoRefresh />
           <Header />
           <main className="flex-1">{children}</main>
-          <Footer />
+          <ConditionalFooter />
         </SessionProvider>
       </body>
     </html>
