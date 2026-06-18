@@ -25,15 +25,10 @@ services:
       - "1027:1025"
       - "8027:8025"
 
-  # 마이그레이션 전용 1회성 서비스 — builder 스테이지(전체 node_modules + prisma CLI) 사용.
-  # standalone 런너에는 prisma CLI 의존성이 없어 migrate 를 여기서 수행한다.
+  # 마이그레이션 전용 1회성 서비스 — app 과 동일 이미지 사용(전체 node_modules 포함).
+  # 별도 migrate 이미지가 없어 배포 시 이미지 하나만 전송하면 된다.
   migrate:
-    image: linguaclass-p3-migrate:latest
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: builder
-    container_name: linguaclass-p3-migrate
+    image: linguaclass-p3-app:latest
     depends_on:
       postgres:
         condition: service_healthy
