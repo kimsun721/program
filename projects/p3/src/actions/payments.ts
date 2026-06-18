@@ -42,8 +42,8 @@ export async function initiatePayment(courseId: string) {
       userId: user.id,
       meta: { courseId },
     });
-    revalidatePath("/my");
-    revalidatePath(`/courses/${courseId}`);
+    // 이 액션은 페이지 렌더(/payment) 중에도 호출되므로 revalidatePath 를 부르지 않는다.
+    // /my·/courses/[id] 는 동적 페이지라 다음 진입 시 자동으로 최신 데이터를 읽는다.
     return { success: true, free: true, enrollmentId: enrollment.id, courseId };
   }
 
@@ -163,8 +163,8 @@ export async function completePaymentToss(
     notifyPaymentDone(user.id, payment.course.title, payment.course.id),
   ]);
 
-  revalidatePath("/my");
-  revalidatePath("/my/payments");
+  // /payment/success 페이지 렌더 중 호출되므로 revalidatePath 금지(렌더 중 호출 시 런타임 에러).
+  // /my·/my/payments 는 동적 페이지라 다음 진입 시 최신 데이터를 읽는다.
   return { success: true, enrollmentId: enrollment.id, courseId: payment.courseId };
 }
 
